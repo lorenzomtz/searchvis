@@ -33,6 +33,7 @@ SQ_WIDTH = 20
 pygame.init()  
 screen = pygame.display.set_mode((WIDTH, WIDTH))
 clock = pygame.time.Clock()
+grid = []
 
 # a square on the grid
 class Square:
@@ -54,12 +55,6 @@ class Square:
     def get_pos(self):
         return self.row, self.col
 
-    def get_row(self):
-        return self.row
-    
-    def get_col(self):
-        return self.col
-
     def get_color(self):
         return self.color
 
@@ -79,9 +74,17 @@ class Square:
 def setup_screen():
     screen.fill(BLACK)
     pygame.display.set_caption("Path Finding Algorithms")
-    
+
+# setup grid of Square objects
+def setup_grid():
+    for y in range(38):
+        grid.append([])
+        for x in range(38):
+            square = Square(y, x, SQ_WIDTH, 38)
+            grid[y].append(square)
 
 def main():
+    setup_grid()
     running = True
     # game loop
     while running:
