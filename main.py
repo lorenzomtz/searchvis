@@ -28,7 +28,7 @@ TURQUOISE = (64, 224, 208)
 
 # set up square screen
 WIDTH = 800
-MARGIN = 2
+MARGIN = 1
 SQ_WIDTH = 20
 pygame.init()  
 screen = pygame.display.set_mode((WIDTH, WIDTH))
@@ -96,8 +96,8 @@ def main():
 
         setup_screen()
         # grid setup
-        for y in range(36):
-            for x in range(36):
+        for y in range(38):
+            for x in range(38):
                 color = WHITE
                 pygame.draw.rect(screen, color, \
                     [(MARGIN + SQ_WIDTH) * x + MARGIN, \
