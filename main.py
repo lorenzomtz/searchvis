@@ -31,7 +31,6 @@ WIDTH = 800
 pygame.init()  
 screen = pygame.display.set_mode((WIDTH, WIDTH))
 
-
 # a square on the grid
 class Square:
 
@@ -73,9 +72,12 @@ class Square:
     def get_total_rows(self):
         return self.total_rows
 
-def main():
+def setup_screen():
+    screen.fill(WHITE)
     pygame.display.set_caption("Path Finding Algorithms")
+    
 
+def main():
     running = True
     # game loop
     while running:
@@ -88,6 +90,8 @@ def main():
             elif event.type == QUIT:
                 running = False
 
+        setup_screen()
+        pygame.display.flip()
 
 if __name__ == "__main__":
     main()
