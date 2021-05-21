@@ -57,18 +57,16 @@ class Square:
 
     def get_color(self):
         return self.color
-
-    def get_x(self):
-        return self.x
-
-    def get_y(self):
-        return self.y
     
     def get_width(self):
         return self.width
 
     def get_total_rows(self):
         return self.total_rows
+
+    def set_color(self, color):
+        self.color = color
+
 
 # basic screen management
 def setup_screen():
@@ -85,6 +83,7 @@ def setup_grid():
 
 def main():
     setup_grid()
+    # grid[20][20].set_color(BLUE)
     running = True
     # game loop
     while running:
@@ -96,12 +95,21 @@ def main():
             # window close button
             elif event.type == QUIT:
                 running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                # User clicks the mouse. Get the position
+                pos = pygame.mouse.get_pos()
+                # Change the x/y screen coordinates to grid coordinates
+                column = pos[0] // (SQ_WIDTH + MARGIN)
+                row = pos[1] // (SQ_WIDTH + MARGIN)
+                # Set that location to one
+                grid[row][column].set_color(GREY)
+                print("Click ", pos, "Grid coordinates: ", row, column)
 
         setup_screen()
         # grid setup
         for y in range(38):
             for x in range(38):
-                color = WHITE
+                color = grid[y][x].get_color()
                 pygame.draw.rect(screen, color, \
                     [(MARGIN + SQ_WIDTH) * x + MARGIN, \
                         (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
