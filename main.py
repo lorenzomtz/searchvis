@@ -28,8 +28,11 @@ TURQUOISE = (64, 224, 208)
 
 # set up square screen
 WIDTH = 800
+MARGIN = 2
+SQ_WIDTH = 20
 pygame.init()  
 screen = pygame.display.set_mode((WIDTH, WIDTH))
+clock = pygame.time.Clock()
 
 # a square on the grid
 class Square:
@@ -72,8 +75,9 @@ class Square:
     def get_total_rows(self):
         return self.total_rows
 
+# basic screen management
 def setup_screen():
-    screen.fill(WHITE)
+    screen.fill(BLACK)
     pygame.display.set_caption("Path Finding Algorithms")
     
 
@@ -91,7 +95,18 @@ def main():
                 running = False
 
         setup_screen()
+        # grid setup
+        for y in range(36):
+            for x in range(36):
+                color = WHITE
+                pygame.draw.rect(screen, color, \
+                    [(MARGIN + SQ_WIDTH) * x + MARGIN, \
+                        (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
+
+        clock.tick(60)
         pygame.display.flip()
+    
+    pygame.quit()
 
 if __name__ == "__main__":
     main()
