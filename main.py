@@ -14,6 +14,7 @@ from pygame.locals import (
 )
 
 # color constants
+# TODO: find prettier colors
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
@@ -78,8 +79,11 @@ def setup_grid():
     for y in range(38):
         grid.append([])
         for x in range(38):
+            # TODO: populate neighbors for each square
             square = Square(y, x, SQ_WIDTH, 38)
+            
             grid[y].append(square)
+            
 
 def main():
     setup_grid()
@@ -96,14 +100,15 @@ def main():
             elif event.type == QUIT:
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                # User clicks the mouse. Get the position
+                # TODO: click and drag for walls
+                # TODO: click and drag for start and end point
                 pos = pygame.mouse.get_pos()
                 # Change the x/y screen coordinates to grid coordinates
                 column = pos[0] // (SQ_WIDTH + MARGIN)
                 row = pos[1] // (SQ_WIDTH + MARGIN)
-                # Set that location to one
+                # Set that location to grey
                 grid[row][column].set_color(GREY)
-                print("Click ", pos, "Grid coordinates: ", row, column)
+                #print("Click ", pos, "Grid coordinates: ", row, column)
 
         setup_screen()
         # grid setup
