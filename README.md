@@ -1,1 +1,2 @@
-Searchvis is a visualization application for various pathfinding algorithms.
+# Searchvis 
+## visualization application for various pathfinding algorithms
