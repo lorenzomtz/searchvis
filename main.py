@@ -74,6 +74,12 @@ class Square:
     def set_neighbors(self, neighbors):
         self.neighbors = neighbors
 
+    def __str__(self):
+        return "\nSquare at: (" + str(self.row) + ", " + str(self.col) + ")"
+
+    def __repr__(self):
+        return "\nSquare at: (" + str(self.row) + ", " + str(self.col) + ")"
+
 
 def get_square_at(pos):
     return grid[pos[0]][pos[1]]
@@ -108,8 +114,9 @@ def main():
     setup_grid()
     populate_neighbors()
     path = search.dfs(grid[start[0]][start[1]])
-    print("PATH:", path)
-    path = search.bfs(grid[start[0]][start[1]])
+    #print("PATH:", path)
+    #path = search.bfs(grid[start[0]][start[1]])
+    #print(grid)
     print("PATH:", path)
     running = True
     # game loop
