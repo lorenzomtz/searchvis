@@ -1,5 +1,6 @@
 import pygame as pg
 import math
+import search
 
 # key constants from pygame
 from pygame.locals import (
@@ -30,10 +31,13 @@ TURQUOISE = (64, 224, 208)
 WIDTH = 800
 MARGIN = 1
 SQ_WIDTH = 20
+GRID_LENGTH = 38
 pg.init()  
 screen = pg.display.set_mode((WIDTH, WIDTH))
 clock = pg.time.Clock()
 grid = []
+start = 19, 10
+end = 19, 28
 
 # a square on the grid
 class Square:
@@ -71,6 +75,9 @@ class Square:
         self.neighbors = neighbors
 
 
+def get_square_at(pos):
+    return grid[pos[0]][pos[1]]
+
 # basic screen management
 def setup_screen():
     screen.fill(BLACK)
@@ -78,28 +85,32 @@ def setup_screen():
 
 # setup grid of Square objects
 def setup_grid():
-    for y in range(38):
+    for y in range(GRID_LENGTH):
         grid.append([])
-        for x in range(38):
-            square = Square(y, x, SQ_WIDTH, 38)
+        for x in range(GRID_LENGTH):
+            square = Square(y, x, SQ_WIDTH, GRID_LENGTH)
             grid[y].append(square)
-    grid[19][10].set_color(GREEN)
-    grid[19][28].set_color(RED)
+    grid[start[0]][start[1]].set_color(GREEN)
+    grid[end[0]][end[1]].set_color(RED)
             
 def populate_neighbors():
-    for y in range(38):
-        for x in range(38):
+    for y in range(GRID_LENGTH):
+        for x in range(GRID_LENGTH):
             neighbors = []
-            if x-1 in range(38): neighbors.append(grid[y][x-1])
-            if x+1 in range(38): neighbors.append(grid[y][x+1])
-            if y-1 in range(38): neighbors.append(grid[y-1][x])
-            if y+1 in range(38): neighbors.append(grid[y+1][x])
+            if x-1 in range(GRID_LENGTH): neighbors.append((grid[y][x-1], 'West'))
+            if x+1 in range(GRID_LENGTH): neighbors.append((grid[y][x+1], 'East'))
+            if y-1 in range(GRID_LENGTH): neighbors.append((grid[y-1][x], 'South'))
+            if y+1 in range(GRID_LENGTH): neighbors.append((grid[y+1][x], 'North'))
             grid[y][x].set_neighbors(neighbors)
 
 def main():
     setup_screen()
     setup_grid()
     populate_neighbors()
+    path = search.dfs(grid[start[0]][start[1]])
+    print("PATH:", path)
+    path = search.bfs(grid[start[0]][start[1]])
+    print("PATH:", path)
     running = True
     # game loop
     while running:
@@ -124,10 +135,9 @@ def main():
                 if color == WHITE:
                     grid[y][x].set_color(GREY)
 
-        #setup_screen()
         # grid setup
-        for y in range(38):
-            for x in range(38):
+        for y in range(GRID_LENGTH):
+            for x in range(GRID_LENGTH):
                 color = grid[y][x].get_color()
                 pg.draw.rect(screen, color, \
                     [(MARGIN + SQ_WIDTH) * x + MARGIN, \
