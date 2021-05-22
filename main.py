@@ -68,6 +68,9 @@ class Square:
     def set_color(self, color):
         self.color = color
 
+    def set_neighbors(self, neighbors):
+        self.neighbors = neighbors
+
 
 # basic screen management
 def setup_screen():
@@ -81,13 +84,24 @@ def setup_grid():
         for x in range(38):
             # TODO: populate neighbors for each square
             square = Square(y, x, SQ_WIDTH, 38)
-            
             grid[y].append(square)
             
+def populate_neighbors():
+    for y in range(38):
+        for x in range(38):
+            neighbors = []
+            if x-1 in range(38): neighbors.append(grid[y][x-1])
+            if x+1 in range(38): neighbors.append(grid[y][x+1])
+            if y-1 in range(38): neighbors.append(grid[y-1][x])
+            if y+1 in range(38): neighbors.append(grid[y+1][x])
+            grid[y][x].set_neighbors(neighbors)
 
 def main():
     setup_grid()
-    # grid[20][20].set_color(BLUE)
+    populate_neighbors()
+    # neighbors = grid[20][20].get_neighbors()
+    # for n in neighbors:
+    #     print(n.get_pos())
     running = True
     # game loop
     while running:
