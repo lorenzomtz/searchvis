@@ -1,6 +1,5 @@
-import pygame
+import pygame as pg
 import math
-from queue import PriorityQueue
 
 # key constants from pygame
 from pygame.locals import (
@@ -31,9 +30,9 @@ TURQUOISE = (64, 224, 208)
 WIDTH = 800
 MARGIN = 1
 SQ_WIDTH = 20
-pygame.init()  
-screen = pygame.display.set_mode((WIDTH, WIDTH))
-clock = pygame.time.Clock()
+pg.init()  
+screen = pg.display.set_mode((WIDTH, WIDTH))
+clock = pg.time.Clock()
 grid = []
 
 # a square on the grid
@@ -75,16 +74,17 @@ class Square:
 # basic screen management
 def setup_screen():
     screen.fill(BLACK)
-    pygame.display.set_caption("Path Finding Algorithms")
+    pg.display.set_caption("Path Finding Algorithms")
 
 # setup grid of Square objects
 def setup_grid():
     for y in range(38):
         grid.append([])
         for x in range(38):
-            # TODO: populate neighbors for each square
             square = Square(y, x, SQ_WIDTH, 38)
             grid[y].append(square)
+    grid[19][10].set_color(GREEN)
+    grid[19][28].set_color(RED)
             
 def populate_neighbors():
     for y in range(38):
@@ -97,15 +97,13 @@ def populate_neighbors():
             grid[y][x].set_neighbors(neighbors)
 
 def main():
+    setup_screen()
     setup_grid()
     populate_neighbors()
-    # neighbors = grid[20][20].get_neighbors()
-    # for n in neighbors:
-    #     print(n.get_pos())
     running = True
     # game loop
     while running:
-        for event in pygame.event.get():
+        for event in pg.event.get():
             if event.type == KEYDOWN:
                 # escape key
                 if event.key == K_ESCAPE:
@@ -113,30 +111,32 @@ def main():
             # window close button
             elif event.type == QUIT:
                 running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pg.MOUSEBUTTONDOWN:
                 # TODO: click and drag for walls
                 # TODO: click and drag for start and end point
-                pos = pygame.mouse.get_pos()
+                pos = pg.mouse.get_pos()
                 # Change the x/y screen coordinates to grid coordinates
-                column = pos[0] // (SQ_WIDTH + MARGIN)
-                row = pos[1] // (SQ_WIDTH + MARGIN)
+                x = pos[0] // (SQ_WIDTH + MARGIN)
+                y = pos[1] // (SQ_WIDTH + MARGIN)
+                
                 # Set that location to grey
-                grid[row][column].set_color(GREY)
-                #print("Click ", pos, "Grid coordinates: ", row, column)
+                color = grid[y][x].get_color()
+                if color == WHITE:
+                    grid[y][x].set_color(GREY)
 
-        setup_screen()
+        #setup_screen()
         # grid setup
         for y in range(38):
             for x in range(38):
                 color = grid[y][x].get_color()
-                pygame.draw.rect(screen, color, \
+                pg.draw.rect(screen, color, \
                     [(MARGIN + SQ_WIDTH) * x + MARGIN, \
                         (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
 
         clock.tick(60)
-        pygame.display.flip()
+        pg.display.flip()
     
-    pygame.quit()
+    pg.quit()
 
 if __name__ == "__main__":
     main()
