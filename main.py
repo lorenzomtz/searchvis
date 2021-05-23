@@ -168,7 +168,7 @@ def main():
                     clear()
                     squares = search.ucs(grid[start[0]][start[1]])
                     display_path(squares)
-                elif event.key == K_LEFT:
+                elif event.key == K_RIGHT:
                     clear()
                     squares = search.astar(grid[start[0]][start[1]])
                     display_path(squares)
