@@ -15,39 +15,41 @@ SQ_WIDTH = main.SQ_WIDTH
 def dfs(square):
     start = square.get_pos()
     visited = []
-    actions = []
+    squares = []
     # trivial solution check
     if square.get_color() == RED:
         return []
     visited.append(start)
     # find solution recursively
-    return dfs_recur(square, (start,'Undefined'), actions, visited, 255)
+    return dfs_recur(square, (start,'Undefined'), squares, visited, 255)
     
-def dfs_recur(square, node, actions, visited, b):
+def dfs_recur(square, node, squares, visited, b):
     coord, direc = node
     visited.append(coord)
     # check if current position is goal
     if square.get_color() == RED:
-        return actions
+        return squares
     # loop through neighbors
     for neighbor, nDirec, nCost in square.get_neighbors():
         nCoord = neighbor.get_pos()
         if nCoord not in visited:
             # update action and visited list
-            actions.append(nDirec)
+            squares.append(neighbor)
             visited.append(nCoord)
             # mark as visited on screen
-            rect = pg.draw.rect(screen, (180, 180, b), \
-                [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
-                    (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
-            pg.display.update(rect)
+            if neighbor.get_color() != RED:
+                rect = pg.draw.rect(screen, (180, 180, b), \
+                    [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
+                        (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
+                pg.display.update(rect)
             pg.time.delay(5)
-            path = dfs_recur(neighbor, (nCoord, nDirec), actions, visited, b)
+            path = dfs_recur(neighbor, (nCoord, nDirec), squares, visited, b)
+            
             # if path with goal found, return it
             if len(path) > 0:
                 return path
             # if not found, delete this choice from path
-            del actions[len(actions)-1]
+            del squares[len(squares)-1]
 
     # no goal found
     return ''
@@ -80,10 +82,11 @@ def bfs(square):
                 visited.append(nCoord)
                 nextPath = actions + [nDirec]
                 q.put((neighbor, nCoord, nextPath))
-                rect = pg.draw.rect(screen, (180, 180, 255), \
-                    [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
-                        (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
-                pg.display.update(rect)
+                if neighbor.get_color() != RED:
+                    rect = pg.draw.rect(screen, (180, 180, 255), \
+                        [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
+                            (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
+                    pg.display.update(rect)
                 pg.time.delay(5)
 
     return []
