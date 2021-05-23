@@ -2,6 +2,7 @@ from main import Square
 from queue import PriorityQueue, Queue
 import main
 import pygame as pg
+import util
 
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
@@ -29,7 +30,7 @@ def dfs_recur(square, node, actions, visited, b):
     if square.get_color() == RED:
         return actions
     # loop through neighbors
-    for neighbor, nDirec in square.get_neighbors():
+    for neighbor, nDirec, nCost in square.get_neighbors():
         nCoord = neighbor.get_pos()
         if nCoord not in visited:
             # update action and visited list
@@ -40,7 +41,7 @@ def dfs_recur(square, node, actions, visited, b):
                 [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
                     (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
             pg.display.update(rect)
-            pg.time.delay(10)
+            pg.time.delay(5)
             path = dfs_recur(neighbor, (nCoord, nDirec), actions, visited, b)
             # if path with goal found, return it
             if len(path) > 0:
@@ -57,7 +58,7 @@ def bfs(square):
     path = []
     # tracker = {}
     # goal = ()
-    q = Queue(maxsize = 100)
+    q = Queue(maxsize = 1000)
     # trivial solution check
     if square.get_color() == RED:
         return []
@@ -72,7 +73,7 @@ def bfs(square):
         if sq.get_color() == RED:
             return actions
         # loop through kids
-        for neighbor, nDirec in sq.get_neighbors():
+        for neighbor, nDirec, nCost in sq.get_neighbors():
             nCoord = neighbor.get_pos()
             if nCoord not in visited:
                 # update visited, path, and push to the queue
@@ -83,12 +84,55 @@ def bfs(square):
                     [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
                         (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
                 pg.display.update(rect)
-                pg.time.delay(10)
+                pg.time.delay(5)
 
     return []
 
-def ucs():
-    return None
+def ucs(square):
+    start = square.get_pos()
+    visited = []
+    path = []
+    costMap = {}
+    pq = util.PriorityQueue()
+    # trivial solution check
+    if square.get_color() == RED:
+        return []
+    # set initial conditions
+    visited.append(start)
+    pq.push((start, 0, path, square), 0)
+    costMap[start] = 0
+    #print(pq.qsize())
+    while not pq.isEmpty():
+        #print(pq.qsize())
+        #if pq.qsize() > 50:
+        #    break
+        coord, cost, actions, sq = pq.pop()
+        visited.append(coord)
+        # check if current position is goal
+        if sq.get_color() == RED:
+            return actions
+        # loop through kids
+        for neighbor, nDirec, nCost in sq.get_neighbors():
+            nCoord = neighbor.get_pos()
+            total = cost + nCost
+            if nCoord not in visited:
+                # if node already exists in a path with
+                # less cost, skip to next iteration
+                if nCoord in costMap:
+                    if costMap[nCoord] < total:
+                        continue
+                # update costMap, path, and push to the queue
+                costMap[nCoord] = total
+                nextPath = actions + [nDirec]
+                # don't know if will work
+                pq.update((nCoord, total, nextPath, neighbor), total)
+                rect = pg.draw.rect(screen, (180, 180, 255), \
+                    [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
+                        (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
+                pg.display.update(rect)
+                pg.time.delay(5)
+    
+    return []
 
 def astar():
     return None
