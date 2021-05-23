@@ -38,3 +38,7 @@ class PriorityQueue:
                 break
         else:
             self.push(item, priority)
+
+
+def manhattan_dist(start, end):
+    return abs(start[0] - end[0]) + abs(start[1] - end[1])
