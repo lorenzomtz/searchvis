@@ -62,14 +62,13 @@ def bfs(square):
     if square.get_color() == RED:
         return []
     # set initial conditions
-    q.put((start, path))
+    q.put((square, start, path))
     visited.append(start)
 
     while not q.empty():
-        coord, actions = q.get()
-        print(coord)
+        sq, coord, actions = q.get()
         # check is current position is goal
-        sq = main.get_square_at(coord)
+        #sq = main.get_square_at(coord)
         if sq.get_color() == RED:
             return actions
         # loop through kids
@@ -79,7 +78,12 @@ def bfs(square):
                 # update visited, path, and push to the queue
                 visited.append(nCoord)
                 nextPath = actions + [nDirec]
-                q.put((nCoord, nextPath))
+                q.put((neighbor, nCoord, nextPath))
+                rect = pg.draw.rect(screen, (180, 180, 255), \
+                    [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
+                        (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
+                pg.display.update(rect)
+                pg.time.delay(10)
 
     return []
 

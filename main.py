@@ -82,9 +82,6 @@ class Square:
         return "\nSquare at: (" + str(self.row) + ", " + str(self.col) + ")"
 
 
-def get_square_at(pos):
-    return grid[pos[0]][pos[1]]
-
 # basic screen management
 def setup_screen():
     screen.fill(BLACK)
@@ -147,8 +144,11 @@ def main():
                 if event.key == K_ESCAPE:
                     running = False
                     pg.quit()
-                if event.key == K_UP:
+                elif event.key == K_UP:
                     path = search.dfs(grid[start[0]][start[1]])
+                    print("PATH:", path)
+                elif event.key == K_DOWN:
+                    path = search.bfs(grid[start[0]][start[1]])
                     print("PATH:", path)
             # window close button
             elif event.type == QUIT:
