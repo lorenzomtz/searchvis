@@ -36,7 +36,7 @@ pg.init()
 screen = pg.display.set_mode((WIDTH, WIDTH))
 clock = pg.time.Clock()
 grid = []
-rects = []
+#rects = []
 start = (19, 10)
 end = (30, 29)
 
@@ -89,9 +89,10 @@ def setup_screen():
 
 # setup grid of Square objects
 def setup_grid():
+    #grid = []
     for y in range(GRID_LENGTH):
         grid.append([])
-        rects.append([])
+        #rects.append([])
         for x in range(GRID_LENGTH):
             square = Square(y, x, SQ_WIDTH, GRID_LENGTH)
             grid[y].append(square)
@@ -104,7 +105,7 @@ def setup_grid():
             rect = pg.draw.rect(screen, color, \
                 [(MARGIN + SQ_WIDTH) * x + MARGIN, \
                     (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
-            rects[y].append(rect)
+            #rects[y].append(rect)
     pg.display.flip()
 
             
@@ -112,29 +113,24 @@ def populate_neighbors():
     for y in range(GRID_LENGTH):
         for x in range(GRID_LENGTH):
             neighbors = []
-            if x+1 in range(GRID_LENGTH): neighbors.append((grid[y][x+1], 'East'))
-            if x-1 in range(GRID_LENGTH): neighbors.append((grid[y][x-1], 'West'))
-            if y-1 in range(GRID_LENGTH): neighbors.append((grid[y-1][x], 'South'))
-            if y+1 in range(GRID_LENGTH): neighbors.append((grid[y+1][x], 'North'))
+            if x+1 in range(GRID_LENGTH): neighbors.append((grid[y][x+1], 'East', 1))
+            if x-1 in range(GRID_LENGTH): neighbors.append((grid[y][x-1], 'West', 1))
+            if y-1 in range(GRID_LENGTH): neighbors.append((grid[y-1][x], 'South', 1))
+            if y+1 in range(GRID_LENGTH): neighbors.append((grid[y+1][x], 'North', 1))
             grid[y][x].set_neighbors(neighbors)
 
 def make_wall(x, y):
     color = GREY
     grid[y][x].set_color(color)
-    pg.draw.rect(screen, color, \
+    rect = pg.draw.rect(screen, color, \
                     [(MARGIN + SQ_WIDTH) * x + MARGIN, \
                         (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
-    pg.display.update(rects[y][x])
+    pg.display.update(rect)
 
 def main():
     setup_screen()
     setup_grid()
     populate_neighbors()
-    #path = search.dfs(grid[start[0]][start[1]])
-    #print("PATH:", path)
-    #path = search.bfs(grid[start[0]][start[1]])
-    #print(grid)
-    #print("PATH:", path)
     running = True
     # game loop
     while running:
@@ -145,10 +141,23 @@ def main():
                     running = False
                     pg.quit()
                 elif event.key == K_UP:
-                    path = search.dfs(grid[start[0]][start[1]])
-                    print("PATH:", path)
-                elif event.key == K_DOWN:
                     path = search.bfs(grid[start[0]][start[1]])
+                    #setup_grid()
+                elif event.key == K_DOWN:
+                    squares = search.dfs(grid[start[0]][start[1]])
+                    for sq in squares:
+                        color = sq.get_color()
+                        if color is not GREEN and color is not RED:
+                            x, y = sq.get_pos()
+                            grid[y][x].set_color(TURQUOISE)
+                            rect = pg.draw.rect(screen, TURQUOISE, \
+                                [(MARGIN + SQ_WIDTH) * x + MARGIN, \
+                                    (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
+                            pg.display.update(rect)
+                            pg.time.delay(5)
+
+                elif event.key == K_LEFT:
+                    path = search.ucs(grid[start[0]][start[1]])
                     print("PATH:", path)
             # window close button
             elif event.type == QUIT:
@@ -166,18 +175,6 @@ def main():
                 color = grid[y][x].get_color()
                 if color == WHITE:
                     make_wall(x, y)
-        # # grid setup
-        # for y in range(GRID_LENGTH):
-        #     for x in range(GRID_LENGTH):
-        #         color = grid[y][x].get_color()
-        #         pg.draw.rect(screen, color, \
-        #             [(MARGIN + SQ_WIDTH) * x + MARGIN, \
-        #                 (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
-
-        #clock.tick(60)
-        #pg.display.flip()
-    
-    #pg.quit()
 
 if __name__ == "__main__":
     main()
