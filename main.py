@@ -139,10 +139,14 @@ def display_path(squares):
             pg.display.update(rect)
             pg.time.delay(5)
 
-def main():
-    setup_screen()
+def clear():
+    grid = []
     setup_grid()
     populate_neighbors()
+
+def main():
+    setup_screen()
+    clear()
     running = True
     # game loop
     while running:
@@ -153,12 +157,15 @@ def main():
                     running = False
                     pg.quit()
                 elif event.key == K_UP:
+                    clear()
                     squares = search.bfs(grid[start[0]][start[1]])
                     display_path(squares)
                 elif event.key == K_DOWN:
+                    clear()
                     squares = search.dfs(grid[start[0]][start[1]])
                     display_path(squares)
                 elif event.key == K_LEFT:
+                    clear()
                     squares = search.ucs(grid[start[0]][start[1]])
                     display_path(squares)
             # window close button
