@@ -94,7 +94,7 @@ def bfs(square):
 def ucs(square):
     start = square.get_pos()
     visited = []
-    path = []
+    squares = []
     costMap = {}
     pq = util.PriorityQueue()
     # trivial solution check
@@ -102,18 +102,16 @@ def ucs(square):
         return []
     # set initial conditions
     visited.append(start)
-    pq.push((start, 0, path, square), 0)
+    pq.push((start, 0, squares, square), 0)
     costMap[start] = 0
-    #print(pq.qsize())
     while not pq.isEmpty():
-        #print(pq.qsize())
         #if pq.qsize() > 50:
         #    break
-        coord, cost, actions, sq = pq.pop()
+        coord, cost, squares, sq = pq.pop()
         visited.append(coord)
         # check if current position is goal
         if sq.get_color() == RED:
-            return actions
+            return squares
         # loop through kids
         for neighbor, nDirec, nCost in sq.get_neighbors():
             nCoord = neighbor.get_pos()
@@ -126,14 +124,14 @@ def ucs(square):
                         continue
                 # update costMap, path, and push to the queue
                 costMap[nCoord] = total
-                nextPath = actions + [nDirec]
+                nextSquares = squares + [neighbor]
                 # don't know if will work
-                pq.update((nCoord, total, nextPath, neighbor), total)
+                pq.update((nCoord, total, nextSquares, neighbor), total)
                 rect = pg.draw.rect(screen, (180, 180, 255), \
                     [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
                         (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
                 pg.display.update(rect)
-                pg.time.delay(5)
+                #pg.time.delay(5)
     
     return []
 
