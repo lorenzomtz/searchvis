@@ -168,6 +168,10 @@ def main():
                     clear()
                     squares = search.ucs(grid[start[0]][start[1]])
                     display_path(squares)
+                elif event.key == K_LEFT:
+                    clear()
+                    squares = search.astar(grid[start[0]][start[1]])
+                    display_path(squares)
             # window close button
             elif event.type == QUIT:
                 running = False
