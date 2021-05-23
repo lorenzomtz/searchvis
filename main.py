@@ -38,7 +38,7 @@ clock = pg.time.Clock()
 grid = []
 #rects = []
 start = (19, 10)
-end = (30, 29)
+end = (19, 29)
 
 # a square on the grid
 class Square:
@@ -127,6 +127,18 @@ def make_wall(x, y):
                         (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
     pg.display.update(rect)
 
+def display_path(squares):
+    for sq in squares:
+        color = sq.get_color()
+        if color is not GREEN and color is not RED:
+            y, x = sq.get_pos()
+            grid[y][x].set_color(BLACK)
+            rect = pg.draw.rect(screen, BLACK, \
+                [(MARGIN + SQ_WIDTH) * x + MARGIN, \
+                    (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
+            pg.display.update(rect)
+            pg.time.delay(5)
+
 def main():
     setup_screen()
     setup_grid()
@@ -141,24 +153,14 @@ def main():
                     running = False
                     pg.quit()
                 elif event.key == K_UP:
-                    path = search.bfs(grid[start[0]][start[1]])
-                    #setup_grid()
+                    squares = search.bfs(grid[start[0]][start[1]])
+                    display_path(squares)
                 elif event.key == K_DOWN:
                     squares = search.dfs(grid[start[0]][start[1]])
-                    for sq in squares:
-                        color = sq.get_color()
-                        if color is not GREEN and color is not RED:
-                            x, y = sq.get_pos()
-                            grid[y][x].set_color(TURQUOISE)
-                            rect = pg.draw.rect(screen, TURQUOISE, \
-                                [(MARGIN + SQ_WIDTH) * x + MARGIN, \
-                                    (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
-                            pg.display.update(rect)
-                            pg.time.delay(5)
-
+                    display_path(squares)
                 elif event.key == K_LEFT:
-                    path = search.ucs(grid[start[0]][start[1]])
-                    print("PATH:", path)
+                    squares = search.ucs(grid[start[0]][start[1]])
+                    display_path(squares)
             # window close button
             elif event.type == QUIT:
                 running = False
