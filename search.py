@@ -4,7 +4,10 @@ import main
 import pygame as pg
 
 RED = (255, 0, 0)
+BLUE = (0, 0, 255)
 screen = main.screen
+MARGIN = main.MARGIN
+SQ_WIDTH = main.SQ_WIDTH
 
 def dfs(square):
     start = square.get_pos()
@@ -30,7 +33,10 @@ def dfs_recur(square, node, actions, visited):
             # update action and visited list
             actions.append(nDirec)
             visited.append(nCoord)
-            
+            rect = pg.draw.rect(screen, BLUE, \
+                [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
+                    (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
+            pg.display.update(rect)
             path = dfs_recur(neighbor, (nCoord, nDirec), actions, visited)
             # if path with goal found, return it
             if len(path) > 0:
