@@ -36,8 +36,9 @@ pg.init()
 screen = pg.display.set_mode((WIDTH, WIDTH))
 clock = pg.time.Clock()
 grid = []
-start = 19, 10
-end = 19, 28
+rects = []
+start = (19, 10)
+end = (19, 28)
 
 # a square on the grid
 class Square:
@@ -93,11 +94,22 @@ def setup_screen():
 def setup_grid():
     for y in range(GRID_LENGTH):
         grid.append([])
+        rects.append([])
         for x in range(GRID_LENGTH):
             square = Square(y, x, SQ_WIDTH, GRID_LENGTH)
             grid[y].append(square)
-    grid[start[0]][start[1]].set_color(GREEN)
-    grid[end[0]][end[1]].set_color(RED)
+            color = grid[y][x].get_color()
+            # change start colors
+            if y == start[0] and x == start[1] \
+                or y == end[0] and x == end[1]:
+                color = GREEN if x == start[1] else RED
+                grid[y][x].set_color(color)
+            rect = pg.draw.rect(screen, color, \
+                [(MARGIN + SQ_WIDTH) * x + MARGIN, \
+                    (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
+            rects[y].append(rect)
+    pg.display.flip()
+
             
 def populate_neighbors():
     for y in range(GRID_LENGTH):
@@ -109,15 +121,23 @@ def populate_neighbors():
             if y+1 in range(GRID_LENGTH): neighbors.append((grid[y+1][x], 'North'))
             grid[y][x].set_neighbors(neighbors)
 
+def make_wall(x, y):
+    color = GREY
+    grid[y][x].set_color(color)
+    pg.draw.rect(screen, color, \
+                    [(MARGIN + SQ_WIDTH) * x + MARGIN, \
+                        (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
+    pg.display.update(rects[y][x])
+
 def main():
     setup_screen()
     setup_grid()
     populate_neighbors()
-    path = search.dfs(grid[start[0]][start[1]])
+    #path = search.dfs(grid[start[0]][start[1]])
     #print("PATH:", path)
     #path = search.bfs(grid[start[0]][start[1]])
     #print(grid)
-    print("PATH:", path)
+    #print("PATH:", path)
     running = True
     # game loop
     while running:
@@ -126,9 +146,14 @@ def main():
                 # escape key
                 if event.key == K_ESCAPE:
                     running = False
+                    pg.quit()
+                if event.key == K_UP:
+                    path = search.dfs(grid[start[0]][start[1]])
+                    print("PATH:", path)
             # window close button
             elif event.type == QUIT:
                 running = False
+                pg.quit()
             elif event.type == pg.MOUSEBUTTONDOWN:
                 # TODO: click and drag for walls
                 # TODO: click and drag for start and end point
@@ -140,20 +165,19 @@ def main():
                 # Set that location to grey
                 color = grid[y][x].get_color()
                 if color == WHITE:
-                    grid[y][x].set_color(GREY)
+                    make_wall(x, y)
+        # # grid setup
+        # for y in range(GRID_LENGTH):
+        #     for x in range(GRID_LENGTH):
+        #         color = grid[y][x].get_color()
+        #         pg.draw.rect(screen, color, \
+        #             [(MARGIN + SQ_WIDTH) * x + MARGIN, \
+        #                 (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
 
-        # grid setup
-        for y in range(GRID_LENGTH):
-            for x in range(GRID_LENGTH):
-                color = grid[y][x].get_color()
-                pg.draw.rect(screen, color, \
-                    [(MARGIN + SQ_WIDTH) * x + MARGIN, \
-                        (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
-
-        clock.tick(60)
-        pg.display.flip()
+        #clock.tick(60)
+        #pg.display.flip()
     
-    pg.quit()
+    #pg.quit()
 
 if __name__ == "__main__":
     main()
