@@ -164,18 +164,19 @@ def astar(square):
             # loop through kids
             for neighbor, nDirec, nCost in sq.get_neighbors():
                 nCoord = neighbor.get_pos()
-                total = cost + nCost + util.manhattan_dist(nCoord, main.end)
+                total = cost + nCost# + util.manhattan_dist(nCoord, main.end)
+                total_heur = total + util.manhattan_dist(nCoord, main.end)
                 if nCoord not in visited:
                     # if node already exists in a path with
                     # less cost, skip to next iteration
                     if nCoord in costMap:
-                        if costMap[nCoord] < total:
+                        if costMap[nCoord] < total_heur:
                             continue
                     # update costMap, path, and push to the queue
                     costMap[nCoord] = total
                     nextSquares = squares + [neighbor]
                     # don't know if will work
-                    pq.update((nCoord, total, nextSquares, neighbor), total)
+                    pq.update((nCoord, total, nextSquares, neighbor), total_heur)
                     if neighbor.get_color() != RED:
                         rect = pg.draw.rect(screen, (180, 180, 255), \
                             [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
