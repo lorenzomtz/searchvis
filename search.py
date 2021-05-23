@@ -138,6 +138,85 @@ def ucs(square):
     
     return []
 
-def astar():
-    return None
+def astar(square):
+    start = square.get_pos()
+    visited = []
+    squares = []
+    costMap = {}
+    pq = util.PriorityQueue()
+    # trivial solution check
+    if square.get_color() == RED:
+        return []
+    # set initial conditions
+    #visited.append(start)
+    pq.push((start, 0, squares, square), 0)
+    costMap[start] = 0
+    while not pq.isEmpty():
+        #if pq.qsize() > 50:
+        #    break
+        coord, cost, squares, sq = pq.pop()
+        #visited.append(coord)
+        # check if current position is goal
+        if sq.get_color() == RED:
+            return squares
+        if coord not in visited:
+            visited.append(coord)
+            # loop through kids
+            for neighbor, nDirec, nCost in sq.get_neighbors():
+                nCoord = neighbor.get_pos()
+                total = cost + nCost + util.manhattan_dist(nCoord, main.end)
+                if nCoord not in visited:
+                    # if node already exists in a path with
+                    # less cost, skip to next iteration
+                    if nCoord in costMap:
+                        if costMap[nCoord] < total:
+                            continue
+                    # update costMap, path, and push to the queue
+                    costMap[nCoord] = total
+                    nextSquares = squares + [neighbor]
+                    # don't know if will work
+                    pq.update((nCoord, total, nextSquares, neighbor), total)
+                    if neighbor.get_color() != RED:
+                        rect = pg.draw.rect(screen, (180, 180, 255), \
+                            [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
+                                (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
+                        pg.display.update(rect)
+                    pg.time.delay(5)
+    
+    return []
+    """
+    start = square.get_pos()                                      
+    pq = util.PriorityQueue()
+    visited = []
+    squares = []
+    # trivial solution che
+    if square.get_color() == RED:
+        return []
+    # set initial conditions
+    pq.push((start, squares, square), 0)
+
+    while not pq.isEmpty():
+        coord, squares, square = pq.pop()
+        # check if current position is goal
+        if square.get_color() == RED:
+            return squares
+        if coord not in visited:
+            visited.append(coord)
+            # loop through kids
+            for neighbor, nDirec, nCost in square.get_neighbors():
+                # update path, compute total, push to queue
+                nCoord = neighbor.get_pos()
+                newSquares = squares + [neighbor]
+                print(len(newSquares))
+                total = len(newSquares) + util.manhattan_dist(nCoord, main.end)
+                pq.push((nCoord, newSquares, square), total)
+                if neighbor.get_color() != RED:
+                    rect = pg.draw.rect(screen, (180, 180, 255), \
+                        [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
+                            (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
+                    pg.display.update(rect)
+                pg.time.delay(5)
+    
+    return []
+"""
 
