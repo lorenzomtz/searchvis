@@ -96,7 +96,7 @@ def setup_grid():
         for x in range(GRID_LENGTH):
             square = Square(y, x, SQ_WIDTH, GRID_LENGTH)
             grid[y].append(square)
-            color = grid[y][x].get_color()
+            color = WHITE
             # change start colors
             if y == start[0] and x == start[1] \
                 or y == end[0] and x == end[1]:
