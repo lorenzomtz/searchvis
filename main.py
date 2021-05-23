@@ -38,7 +38,7 @@ clock = pg.time.Clock()
 grid = []
 rects = []
 start = (19, 10)
-end = (19, 28)
+end = (30, 29)
 
 # a square on the grid
 class Square:
@@ -102,7 +102,7 @@ def setup_grid():
             # change start colors
             if y == start[0] and x == start[1] \
                 or y == end[0] and x == end[1]:
-                color = GREEN if x == start[1] else RED
+                color = GREEN if x == start[1] and y == start[0] else RED
                 grid[y][x].set_color(color)
             rect = pg.draw.rect(screen, color, \
                 [(MARGIN + SQ_WIDTH) * x + MARGIN, \
@@ -115,8 +115,8 @@ def populate_neighbors():
     for y in range(GRID_LENGTH):
         for x in range(GRID_LENGTH):
             neighbors = []
-            if x-1 in range(GRID_LENGTH): neighbors.append((grid[y][x-1], 'West'))
             if x+1 in range(GRID_LENGTH): neighbors.append((grid[y][x+1], 'East'))
+            if x-1 in range(GRID_LENGTH): neighbors.append((grid[y][x-1], 'West'))
             if y-1 in range(GRID_LENGTH): neighbors.append((grid[y-1][x], 'South'))
             if y+1 in range(GRID_LENGTH): neighbors.append((grid[y+1][x], 'North'))
             grid[y][x].set_neighbors(neighbors)
