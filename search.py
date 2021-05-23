@@ -1,8 +1,10 @@
 from main import Square
 from queue import PriorityQueue, Queue
 import main
+import pygame as pg
 
 RED = (255, 0, 0)
+screen = main.screen
 
 def dfs(square):
     start = square.get_pos()
@@ -28,6 +30,7 @@ def dfs_recur(square, node, actions, visited):
             # update action and visited list
             actions.append(nDirec)
             visited.append(nCoord)
+            
             path = dfs_recur(neighbor, (nCoord, nDirec), actions, visited)
             # if path with goal found, return it
             if len(path) > 0:
