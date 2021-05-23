@@ -57,7 +57,7 @@ def dfs_recur(square, node, squares, visited, b):
 def bfs(square):
     start = square.get_pos()
     visited = []
-    path = []
+    squares = []
     # tracker = {}
     # goal = ()
     q = Queue(maxsize = 1000)
@@ -65,23 +65,23 @@ def bfs(square):
     if square.get_color() == RED:
         return []
     # set initial conditions
-    q.put((square, start, path))
+    q.put((square, start, squares))
     visited.append(start)
 
     while not q.empty():
-        sq, coord, actions = q.get()
+        sq, coord, squares = q.get()
         # check is current position is goal
         #sq = main.get_square_at(coord)
         if sq.get_color() == RED:
-            return actions
+            return squares
         # loop through kids
         for neighbor, nDirec, nCost in sq.get_neighbors():
             nCoord = neighbor.get_pos()
             if nCoord not in visited:
                 # update visited, path, and push to the queue
                 visited.append(nCoord)
-                nextPath = actions + [nDirec]
-                q.put((neighbor, nCoord, nextPath))
+                nextSquares = squares + [neighbor]
+                q.put((neighbor, nCoord, nextSquares))
                 if neighbor.get_color() != RED:
                     rect = pg.draw.rect(screen, (180, 180, 255), \
                         [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
