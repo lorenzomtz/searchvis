@@ -6,8 +6,10 @@ import pygame as pg
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 screen = main.screen
+clock = main.clock
 MARGIN = main.MARGIN
 SQ_WIDTH = main.SQ_WIDTH
+
 
 def dfs(square):
     start = square.get_pos()
@@ -18,9 +20,9 @@ def dfs(square):
         return []
     visited.append(start)
     # find solution recursively
-    return dfs_recur(square, (start,'Undefined'), actions, visited)
+    return dfs_recur(square, (start,'Undefined'), actions, visited, 255)
     
-def dfs_recur(square, node, actions, visited):
+def dfs_recur(square, node, actions, visited, b):
     coord, direc = node
     visited.append(coord)
     # check if current position is goal
@@ -33,11 +35,13 @@ def dfs_recur(square, node, actions, visited):
             # update action and visited list
             actions.append(nDirec)
             visited.append(nCoord)
-            rect = pg.draw.rect(screen, BLUE, \
+            # mark as visited on screen
+            rect = pg.draw.rect(screen, (180, 180, b), \
                 [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
                     (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
             pg.display.update(rect)
-            path = dfs_recur(neighbor, (nCoord, nDirec), actions, visited)
+            pg.time.delay(10)
+            path = dfs_recur(neighbor, (nCoord, nDirec), actions, visited, b)
             # if path with goal found, return it
             if len(path) > 0:
                 return path
