@@ -101,37 +101,40 @@ def ucs(square):
     if square.get_color() == RED:
         return []
     # set initial conditions
-    visited.append(start)
+    #visited.append(start)
     pq.push((start, 0, squares, square), 0)
     costMap[start] = 0
     while not pq.isEmpty():
         #if pq.qsize() > 50:
         #    break
         coord, cost, squares, sq = pq.pop()
-        visited.append(coord)
+        #visited.append(coord)
         # check if current position is goal
         if sq.get_color() == RED:
             return squares
-        # loop through kids
-        for neighbor, nDirec, nCost in sq.get_neighbors():
-            nCoord = neighbor.get_pos()
-            total = cost + nCost
-            if nCoord not in visited:
-                # if node already exists in a path with
-                # less cost, skip to next iteration
-                if nCoord in costMap:
-                    if costMap[nCoord] < total:
-                        continue
-                # update costMap, path, and push to the queue
-                costMap[nCoord] = total
-                nextSquares = squares + [neighbor]
-                # don't know if will work
-                pq.update((nCoord, total, nextSquares, neighbor), total)
-                rect = pg.draw.rect(screen, (180, 180, 255), \
-                    [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
-                        (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
-                pg.display.update(rect)
-                #pg.time.delay(5)
+        if coord not in visited:
+            visited.append(coord)
+            # loop through kids
+            for neighbor, nDirec, nCost in sq.get_neighbors():
+                nCoord = neighbor.get_pos()
+                total = cost + nCost
+                if nCoord not in visited:
+                    # if node already exists in a path with
+                    # less cost, skip to next iteration
+                    if nCoord in costMap:
+                        if costMap[nCoord] < total:
+                            continue
+                    # update costMap, path, and push to the queue
+                    costMap[nCoord] = total
+                    nextSquares = squares + [neighbor]
+                    # don't know if will work
+                    pq.update((nCoord, total, nextSquares, neighbor), total)
+                    if neighbor.get_color() != RED:
+                        rect = pg.draw.rect(screen, (180, 180, 255), \
+                            [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
+                                (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
+                        pg.display.update(rect)
+                    pg.time.delay(5)
     
     return []
 
