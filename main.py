@@ -37,8 +37,8 @@ screen = pg.display.set_mode((WIDTH, WIDTH))
 clock = pg.time.Clock()
 grid = []
 #rects = []
-start = (19, 10)
-end = (19, 29)
+start = (5, 5)
+end = (8, 29)
 
 # a square on the grid
 class Square:
@@ -86,6 +86,7 @@ class Square:
 def setup_screen():
     screen.fill(BLACK)
     pg.display.set_caption("Path Finding Algorithms")
+    clock.tick(60)
 
 # setup grid of Square objects
 def setup_grid():
@@ -139,14 +140,24 @@ def display_path(squares):
             pg.display.update(rect)
             pg.time.delay(5)
 
-def clear():
-    grid = []
+def clear_path():
+    for y in range(GRID_LENGTH):
+        for x in range(GRID_LENGTH):
+            color = grid[y][x].get_color()
+            if color is not GREEN and color is not RED:
+                grid[y][x].set_color(WHITE)
+                rect = pg.draw.rect(screen, WHITE, \
+                    [(MARGIN + SQ_WIDTH) * x + MARGIN, \
+                        (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
+                pg.display.update(rect)
+
+def setup():
+    setup_screen()
     setup_grid()
     populate_neighbors()
 
 def main():
-    setup_screen()
-    clear()
+    setup()
     running = True
     # game loop
     while running:
@@ -157,19 +168,19 @@ def main():
                     running = False
                     pg.quit()
                 elif event.key == K_UP:
-                    clear()
+                    clear_path()
                     squares = search.bfs(grid[start[0]][start[1]])
                     display_path(squares)
                 elif event.key == K_DOWN:
-                    clear()
+                    clear_path()
                     squares = search.dfs(grid[start[0]][start[1]])
                     display_path(squares)
                 elif event.key == K_LEFT:
-                    clear()
+                    clear_path()
                     squares = search.ucs(grid[start[0]][start[1]])
                     display_path(squares)
                 elif event.key == K_RIGHT:
-                    clear()
+                    clear_path()
                     squares = search.astar(grid[start[0]][start[1]])
                     display_path(squares)
             # window close button
