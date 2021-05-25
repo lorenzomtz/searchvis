@@ -144,7 +144,7 @@ def clear_path():
     for y in range(GRID_LENGTH):
         for x in range(GRID_LENGTH):
             color = grid[y][x].get_color()
-            if color is not GREEN and color is not RED:
+            if color is not GREEN and color is not RED and color is not GREY:
                 grid[y][x].set_color(WHITE)
                 rect = pg.draw.rect(screen, WHITE, \
                     [(MARGIN + SQ_WIDTH) * x + MARGIN, \
