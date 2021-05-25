@@ -37,12 +37,7 @@ def dfs_recur(square, node, squares, visited, b):
             squares.append(neighbor)
             visited.append(nCoord)
             # mark as visited on screen
-            if neighbor.get_color() != RED:
-                rect = pg.draw.rect(screen, (180, 180, b), \
-                    [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
-                        (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
-                pg.display.update(rect)
-            pg.time.delay(5)
+            draw_rect(neighbor)
             path = dfs_recur(neighbor, (nCoord, nDirec), squares, visited, b)
             
             # if path with goal found, return it
@@ -82,12 +77,7 @@ def bfs(square):
                 visited.append(nCoord)
                 nextSquares = squares + [neighbor]
                 q.put((neighbor, nCoord, nextSquares))
-                if neighbor.get_color() != RED:
-                    rect = pg.draw.rect(screen, (180, 180, 255), \
-                        [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
-                            (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
-                    pg.display.update(rect)
-                pg.time.delay(5)
+                draw_rect(neighbor)
 
     return []
 
@@ -129,12 +119,7 @@ def ucs(square):
                     nextSquares = squares + [neighbor]
                     # don't know if will work
                     pq.update((nCoord, total, nextSquares, neighbor), total)
-                    if neighbor.get_color() != RED:
-                        rect = pg.draw.rect(screen, (180, 180, 255), \
-                            [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
-                                (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
-                        pg.display.update(rect)
-                    pg.time.delay(5)
+                    draw_rect(neighbor)
     
     return []
 
@@ -170,54 +155,24 @@ def astar(square):
                     # if node already exists in a path with
                     # less cost, skip to next iteration
                     if nCoord in costMap:
-                        if costMap[nCoord] < total_heur:
+                        if costMap[nCoord] < total:
                             continue
                     # update costMap, path, and push to the queue
                     costMap[nCoord] = total
                     nextSquares = squares + [neighbor]
                     # don't know if will work
                     pq.update((nCoord, total, nextSquares, neighbor), total_heur)
-                    if neighbor.get_color() != RED:
-                        rect = pg.draw.rect(screen, (180, 180, 255), \
-                            [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
-                                (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
-                        pg.display.update(rect)
-                    pg.time.delay(5)
+                    draw_rect(neighbor)
     
     return []
-    """
-    start = square.get_pos()                                      
-    pq = util.PriorityQueue()
-    visited = []
-    squares = []
-    # trivial solution che
-    if square.get_color() == RED:
-        return []
-    # set initial conditions
-    pq.push((start, squares, square), 0)
 
-    while not pq.isEmpty():
-        coord, squares, square = pq.pop()
-        # check if current position is goal
-        if square.get_color() == RED:
-            return squares
-        if coord not in visited:
-            visited.append(coord)
-            # loop through kids
-            for neighbor, nDirec, nCost in square.get_neighbors():
-                # update path, compute total, push to queue
-                nCoord = neighbor.get_pos()
-                newSquares = squares + [neighbor]
-                print(len(newSquares))
-                total = len(newSquares) + util.manhattan_dist(nCoord, main.end)
-                pq.push((nCoord, newSquares, square), total)
-                if neighbor.get_color() != RED:
-                    rect = pg.draw.rect(screen, (180, 180, 255), \
-                        [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
-                            (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
-                    pg.display.update(rect)
-                pg.time.delay(5)
-    
-    return []
-"""
+
+def draw_rect(neighbor):
+    nCoord = neighbor.get_pos()
+    if neighbor.get_color() != RED:
+        rect = pg.draw.rect(screen, (180, 180, 255), \
+            [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
+                (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
+        pg.display.update(rect)
+    pg.time.delay(5)
 
