@@ -131,7 +131,7 @@ def make_wall(x, y):
 def display_path(squares):
     for sq in squares:
         color = sq.get_color()
-        if color is not GREEN and color is not RED:
+        if color is not GREEN and color is not RED and color is not GREY:
             y, x = sq.get_pos()
             grid[y][x].set_color(BLACK)
             rect = pg.draw.rect(screen, BLACK, \
@@ -197,7 +197,7 @@ def main():
                 
                 # Set that location to grey
                 color = grid[y][x].get_color()
-                if color == WHITE:
+                if color is not GREEN or color is not RED or color is not BLACK:
                     make_wall(x, y)
 
 if __name__ == "__main__":

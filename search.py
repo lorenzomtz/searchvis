@@ -6,6 +6,7 @@ import util
 
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
+GREY = (128, 128, 128)
 screen = main.screen
 clock = main.clock
 MARGIN = main.MARGIN
@@ -34,8 +35,10 @@ def dfs_recur(square, node, squares, visited, b):
         nCoord = neighbor.get_pos()
         if nCoord not in visited:
             # update action and visited list
-            squares.append(neighbor)
             visited.append(nCoord)
+            if neighbor.get_color() == GREY:
+                continue
+            squares.append(neighbor)
             # mark as visited on screen
             draw_rect(neighbor)
             path = dfs_recur(neighbor, (nCoord, nDirec), squares, visited, b)
@@ -69,12 +72,16 @@ def bfs(square):
         #sq = main.get_square_at(coord)
         if sq.get_color() == RED:
             return squares
+        if sq.get_color() == GREY:
+            continue
         # loop through kids
         for neighbor, nDirec, nCost in sq.get_neighbors():
             nCoord = neighbor.get_pos()
             if nCoord not in visited:
                 # update visited, path, and push to the queue
                 visited.append(nCoord)
+                if neighbor.get_color() == GREY:
+                    continue
                 nextSquares = squares + [neighbor]
                 q.put((neighbor, nCoord, nextSquares))
                 draw_rect(neighbor)
@@ -104,8 +111,12 @@ def ucs(square):
             return squares
         if coord not in visited:
             visited.append(coord)
+            if sq.get_color() == GREY:
+                continue
             # loop through kids
             for neighbor, nDirec, nCost in sq.get_neighbors():
+                if neighbor.get_color() == GREY:
+                    continue
                 nCoord = neighbor.get_pos()
                 total = cost + nCost
                 if nCoord not in visited:
@@ -146,8 +157,12 @@ def astar(square):
             return squares
         if coord not in visited:
             visited.append(coord)
+            if sq.get_color() == GREY:
+                continue
             # loop through kids
             for neighbor, nDirec, nCost in sq.get_neighbors():
+                if neighbor.get_color() == GREY:
+                    continue
                 nCoord = neighbor.get_pos()
                 total = cost + nCost# + util.manhattan_dist(nCoord, main.end)
                 total_heur = total + util.manhattan_dist(nCoord, main.end)
