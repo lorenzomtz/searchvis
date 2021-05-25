@@ -36,7 +36,6 @@ pg.init()
 screen = pg.display.set_mode((WIDTH, WIDTH))
 clock = pg.time.Clock()
 grid = []
-#rects = []
 start = (5, 5)
 end = (8, 29)
 
@@ -90,10 +89,8 @@ def setup_screen():
 
 # setup grid of Square objects
 def setup_grid():
-    #grid = []
     for y in range(GRID_LENGTH):
         grid.append([])
-        #rects.append([])
         for x in range(GRID_LENGTH):
             square = Square(y, x, SQ_WIDTH, GRID_LENGTH)
             grid[y].append(square)
@@ -102,11 +99,11 @@ def setup_grid():
             if y == start[0] and x == start[1] \
                 or y == end[0] and x == end[1]:
                 color = GREEN if x == start[1] and y == start[0] else RED
-                grid[y][x].set_color(color)
+            grid[y][x].set_color(color)
             rect = pg.draw.rect(screen, color, \
                 [(MARGIN + SQ_WIDTH) * x + MARGIN, \
                     (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
-            #rects[y].append(rect)
+
     pg.display.flip()
 
             
@@ -188,17 +185,22 @@ def main():
                 running = False
                 pg.quit()
             elif event.type == pg.MOUSEBUTTONDOWN:
-                # TODO: click and drag for walls
-                # TODO: click and drag for start and end point
-                pos = pg.mouse.get_pos()
-                # Change the x/y screen coordinates to grid coordinates
-                x = pos[0] // (SQ_WIDTH + MARGIN)
-                y = pos[1] // (SQ_WIDTH + MARGIN)
-                
-                # Set that location to grey
-                color = grid[y][x].get_color()
-                if color is not GREEN or color is not RED or color is not BLACK:
-                    make_wall(x, y)
+                # left click, make wall
+                if event.button == 1:
+                    # TODO: click and drag for walls
+                    # TODO: click and drag for start and end point
+                    pos = pg.mouse.get_pos()
+                    # Change the x/y screen coordinates to grid coordinates
+                    x = pos[0] // (SQ_WIDTH + MARGIN)
+                    y = pos[1] // (SQ_WIDTH + MARGIN)
+                    
+                    # Set that location to grey
+                    color = grid[y][x].get_color()
+                    if color is not GREEN or color is not RED or color is not BLACK:
+                        make_wall(x, y)
+                # right click, clear grid
+                elif event.button == 3:
+                    setup()
 
 if __name__ == "__main__":
     main()
