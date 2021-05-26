@@ -186,9 +186,10 @@ def astar(square):
     return []
 
 # draw square on screen during pathfinding
-def draw_square(neighbor):
-    nCoord = neighbor.get_pos()
-    if neighbor.get_color() is not RED:
+def draw_square(square):
+    nCoord = square.get_pos()
+    if square.get_color() != RED:
+        assert nCoord != main.end
         rect = pg.draw.rect(screen, (180, 180, 255), \
             [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
                 (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])

@@ -36,8 +36,8 @@ pg.init()
 screen = pg.display.set_mode((WIDTH, WIDTH))
 clock = pg.time.Clock()
 grid = []
-start = (5, 5)
-end = (8, 29)
+start = (3, 5)
+end = (30, 29)
 
 # a square on the grid
 class Square:
@@ -46,8 +46,6 @@ class Square:
     def __init__(self, row, col, width, total_rows):
         self.row = row
         self.col = col
-        self.x = row * width
-        self.y = col * width
         self.color = WHITE
         self.neighbors = []
         self.width = width
@@ -119,10 +117,7 @@ def populate_neighbors():
 def make_wall(x, y):
     color = GREY
     grid[y][x].set_color(color)
-    rect = pg.draw.rect(screen, color, \
-                    [(MARGIN + SQ_WIDTH) * x + MARGIN, \
-                        (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
-    pg.display.update(rect)
+    draw_rect(color, x, y)
 
 
 # use the list of squares returned from pathfinding to display the path found
@@ -130,13 +125,10 @@ def make_wall(x, y):
 def display_path(squares):
     for sq in squares:
         color = sq.get_color()
-        if color is not GREEN and color is not RED and color is not GREY:
+        if color != GREEN and color != RED and color != GREY:
             y, x = sq.get_pos()
             grid[y][x].set_color(BLACK)
-            rect = pg.draw.rect(screen, BLACK, \
-                [(MARGIN + SQ_WIDTH) * x + MARGIN, \
-                    (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
-            pg.display.update(rect)
+            draw_rect(color, x, y)
             pg.time.delay(5)
 
 
@@ -145,12 +137,16 @@ def clear_path():
     for y in range(GRID_LENGTH):
         for x in range(GRID_LENGTH):
             color = grid[y][x].get_color()
-            if color is not GREEN and color is not RED and color is not GREY:
+            if color != GREEN and color != RED and color != GREY:
                 grid[y][x].set_color(WHITE)
-                rect = pg.draw.rect(screen, WHITE, \
-                    [(MARGIN + SQ_WIDTH) * x + MARGIN, \
-                        (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
-                pg.display.update(rect)
+                draw_rect(color, x, y)
+
+
+def draw_rect(color, x, y):
+    rect = pg.draw.rect(screen, color, \
+                [(MARGIN + SQ_WIDTH) * x + MARGIN, \
+                    (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
+    pg.display.update(rect)
 
 
 # initialize/reset display grid
@@ -206,7 +202,7 @@ def main():
                     y = pos[1] // (SQ_WIDTH + MARGIN)
                     # Set that location to GREY
                     color = grid[y][x].get_color()
-                    if color is not GREEN or color is not RED or color is not BLACK:
+                    if color != GREEN and color != RED and color != BLACK:
                         make_wall(x, y)
                 # right click, clear grid
                 elif event.button == 3:
