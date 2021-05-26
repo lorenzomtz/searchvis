@@ -61,12 +61,6 @@ class Square:
 
     def get_color(self):
         return self.color
-    
-    def get_width(self):
-        return self.width
-
-    def get_total_rows(self):
-        return self.total_rows
 
     def set_color(self, color):
         self.color = color
@@ -106,17 +100,22 @@ def setup_grid():
 
     pg.display.flip()
 
-            
+
+# link all adjacent squares together as neighbors
+# neighbors of (x,y): [(x,y+1), (x,y-1), (x+1,y), (x-1,y)]
 def populate_neighbors():
     for y in range(GRID_LENGTH):
         for x in range(GRID_LENGTH):
             neighbors = []
-            if x+1 in range(GRID_LENGTH): neighbors.append((grid[y][x+1], 'East', 1))
-            if x-1 in range(GRID_LENGTH): neighbors.append((grid[y][x-1], 'West', 1))
-            if y-1 in range(GRID_LENGTH): neighbors.append((grid[y-1][x], 'South', 1))
-            if y+1 in range(GRID_LENGTH): neighbors.append((grid[y+1][x], 'North', 1))
+            if x+1 in range(GRID_LENGTH): neighbors.append((grid[y][x+1], 1))
+            if x-1 in range(GRID_LENGTH): neighbors.append((grid[y][x-1], 1))
+            if y-1 in range(GRID_LENGTH): neighbors.append((grid[y-1][x], 1))
+            if y+1 in range(GRID_LENGTH): neighbors.append((grid[y+1][x], 1))
             grid[y][x].set_neighbors(neighbors)
 
+
+# create a block in all pathfinding algorithms, cannot pass through
+# walls are marked as GREY on the grid
 def make_wall(x, y):
     color = GREY
     grid[y][x].set_color(color)
@@ -125,6 +124,9 @@ def make_wall(x, y):
                         (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
     pg.display.update(rect)
 
+
+# use the list of squares returned from pathfinding to display the path found
+# path marked as BLACK on the grid
 def display_path(squares):
     for sq in squares:
         color = sq.get_color()
@@ -137,6 +139,8 @@ def display_path(squares):
             pg.display.update(rect)
             pg.time.delay(5)
 
+
+# erase any path (BLACK) squares displayed on the grid
 def clear_path():
     for y in range(GRID_LENGTH):
         for x in range(GRID_LENGTH):
@@ -148,10 +152,13 @@ def clear_path():
                         (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
                 pg.display.update(rect)
 
+
+# initialize/reset display grid
 def setup():
     setup_screen()
     setup_grid()
     populate_neighbors()
+
 
 def main():
     setup()
@@ -160,27 +167,31 @@ def main():
     while running:
         for event in pg.event.get():
             if event.type == KEYDOWN:
-                # escape key
+                # escape key: EXIT
                 if event.key == K_ESCAPE:
                     running = False
                     pg.quit()
+                # up arrow key: BFS
                 elif event.key == K_UP:
                     clear_path()
                     squares = search.bfs(grid[start[0]][start[1]])
                     display_path(squares)
+                # down arrow key: DFS
                 elif event.key == K_DOWN:
                     clear_path()
                     squares = search.dfs(grid[start[0]][start[1]])
                     display_path(squares)
+                # left arrow key: UCS
                 elif event.key == K_LEFT:
                     clear_path()
                     squares = search.ucs(grid[start[0]][start[1]])
                     display_path(squares)
+                # right arrow key: A*
                 elif event.key == K_RIGHT:
                     clear_path()
                     squares = search.astar(grid[start[0]][start[1]])
                     display_path(squares)
-            # window close button
+            # window close button: EXIT
             elif event.type == QUIT:
                 running = False
                 pg.quit()
@@ -193,8 +204,7 @@ def main():
                     # Change the x/y screen coordinates to grid coordinates
                     x = pos[0] // (SQ_WIDTH + MARGIN)
                     y = pos[1] // (SQ_WIDTH + MARGIN)
-                    
-                    # Set that location to grey
+                    # Set that location to GREY
                     color = grid[y][x].get_color()
                     if color is not GREEN or color is not RED or color is not BLACK:
                         make_wall(x, y)
