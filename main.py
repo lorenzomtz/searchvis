@@ -128,6 +128,7 @@ def display_path(squares):
         if color != GREEN and color != RED and color != GREY:
             y, x = sq.get_pos()
             grid[y][x].set_color(BLACK)
+            color = BLACK
             draw_rect(color, x, y)
             pg.time.delay(5)
 
