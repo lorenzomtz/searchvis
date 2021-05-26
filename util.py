@@ -1,4 +1,5 @@
 import heapq
+import math
 
 class PriorityQueue:
     """
@@ -39,5 +40,11 @@ class PriorityQueue:
             self.push(item, priority)
 
 
+# calculates manhattan distance between two points
 def manhattan_dist(start, end):
     return abs(start[0] - end[0]) + abs(start[1] - end[1])
+
+
+# calculates euclidean distance between two points
+def euclid_dist(start, end):
+    return math.sqrt((start[0] - end[0]) ** 2 + (start[1] - end[1]) ** 2)
