@@ -36,8 +36,9 @@ pg.init()
 screen = pg.display.set_mode((WIDTH, WIDTH))
 clock = pg.time.Clock()
 grid = []
+rects = []
 start = (3, 5)
-end = (30, 29)
+dest = (10, 29)
 
 # a square on the grid
 class Square:
@@ -83,18 +84,20 @@ def setup_screen():
 def setup_grid():
     for y in range(GRID_LENGTH):
         grid.append([])
+        rects.append([])
         for x in range(GRID_LENGTH):
             square = Square(y, x, SQ_WIDTH, GRID_LENGTH)
             grid[y].append(square)
             color = WHITE
             # change start colors
             if y == start[0] and x == start[1] \
-                or y == end[0] and x == end[1]:
+                or y == dest[0] and x == dest[1]:
                 color = GREEN if x == start[1] and y == start[0] else RED
             grid[y][x].set_color(color)
             rect = pg.draw.rect(screen, color, \
                 [(MARGIN + SQ_WIDTH) * x + MARGIN, \
                     (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
+            rects[y].append(rect)
 
     pg.display.flip()
 
@@ -127,8 +130,8 @@ def display_path(squares):
         color = sq.get_color()
         if color != GREEN and color != RED and color != GREY:
             y, x = sq.get_pos()
-            grid[y][x].set_color(BLACK)
             color = BLACK
+            grid[y][x].set_color(color)
             draw_rect(color, x, y)
             pg.time.delay(5)
 
@@ -139,15 +142,35 @@ def clear_path():
         for x in range(GRID_LENGTH):
             color = grid[y][x].get_color()
             if color != GREEN and color != RED and color != GREY:
-                grid[y][x].set_color(WHITE)
+                color = WHITE
+                grid[y][x].set_color(color)
                 draw_rect(color, x, y)
 
 
+# helper function for drawing on the screen
 def draw_rect(color, x, y):
     rect = pg.draw.rect(screen, color, \
                 [(MARGIN + SQ_WIDTH) * x + MARGIN, \
                     (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
     pg.display.update(rect)
+
+
+def set_start(x, y):
+    global start
+    start = (x, y)
+
+    
+def set_dest(x, y):
+    global dest
+    dest = (x, y)
+
+
+def get_start():
+    return start
+
+
+def get_dest():
+    return dest
 
 
 # initialize/reset display grid
@@ -158,8 +181,18 @@ def setup():
 
 
 def main():
+    #set_start(3, 5)
+    #set_dest(10, 29)
+    # global start
+    # start = (3, 5)
+    # global dest
+    # dest = (10, 29)
     setup()
     running = True
+    drag = False
+    rect_x = None
+    rect_y = None
+    rect_color = None
     # game loop
     while running:
         for event in pg.event.get():
@@ -171,7 +204,7 @@ def main():
                 # up arrow key: BFS
                 elif event.key == K_UP:
                     clear_path()
-                    squares = search.bfs(grid[start[0]][start[1]])
+                    squares = search.bfs(grid[start[0]][start()[1]])
                     display_path(squares)
                 # down arrow key: DFS
                 elif event.key == K_DOWN:
@@ -193,21 +226,51 @@ def main():
                 running = False
                 pg.quit()
             elif event.type == pg.MOUSEBUTTONDOWN:
-                # left click, make wall
+                # left click
                 if event.button == 1:
-                    # TODO: click and drag for walls
-                    # TODO: click and drag for start and end point
+                    #while pg.mouse.get_pressed()[0]:
+                        #print ("being pressed and held")
+                    #    pass
                     pos = pg.mouse.get_pos()
                     # Change the x/y screen coordinates to grid coordinates
                     x = pos[0] // (SQ_WIDTH + MARGIN)
                     y = pos[1] // (SQ_WIDTH + MARGIN)
                     # Set that location to GREY
                     color = grid[y][x].get_color()
-                    if color != GREEN and color != RED and color != BLACK:
+                    # if not start or ending square, make wall
+                    if color != GREEN and color != RED:
+                        # TODO: click and drag for walls
                         make_wall(x, y)
+                    # click and drag start or ending square to move
+                    elif color == GREEN or color == RED:
+                        # TODO: click and drag for start and end point
+                        drag = True
+                        rect_x = x
+                        rect_y = y
+                        rect_color = color
                 # right click, clear grid
                 elif event.button == 3:
                     setup()
+            elif event.type == pg.MOUSEBUTTONUP:
+                if drag:
+                    pos = pg.mouse.get_pos()
+                    # Change the x/y screen coordinates to grid coordinates
+                    x = pos[0] // (SQ_WIDTH + MARGIN)
+                    y = pos[1] // (SQ_WIDTH + MARGIN)
+                    draw_rect(WHITE, rect_x, rect_y)
+                    draw_rect(rect_color, x, y)
+                    grid[rect_y][rect_x].set_color(WHITE)
+                    grid[y][x].set_color(rect_color)
+                    if rect_color == GREEN:
+                        #global start
+                        set_start(y, x)
+                    elif rect_color == RED:
+                        #global dest
+                        set_dest(y, x)
+                    rect_x = None
+                    rect_y = None
+                    rect_color = None
+                    drag = False
 
 if __name__ == "__main__":
     main()
