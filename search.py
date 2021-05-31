@@ -170,7 +170,7 @@ def astar(square):
                 # total path cost
                 total = cost + nCost
                 # total path cost including heuristic
-                total_heur = total + util.manhattan_dist(nCoord, main.end)
+                total_heur = total + util.manhattan_dist(nCoord, main.get_dest())
                 if nCoord not in visited:
                     # if node already exists in a path with
                     # less cost, skip to next iteration
@@ -189,7 +189,7 @@ def astar(square):
 def draw_square(square):
     nCoord = square.get_pos()
     if square.get_color() != RED:
-        assert nCoord != main.end
+        assert nCoord != main.get_dest()
         rect = pg.draw.rect(screen, (180, 180, 255), \
             [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
                 (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
