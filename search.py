@@ -139,9 +139,9 @@ def ucs(square):
 
 
 # A* search
-def astar(square):
-    #print("START:", main.start)
-    #print("DEST:", main.dest)
+def astar(square, dest):
+    print("START:", main.start)
+    print("DEST:", main.dest)
     start = square.get_pos()
     visited = []
     squares = []
@@ -172,7 +172,7 @@ def astar(square):
                 # total path cost
                 total = cost + nCost
                 # total path cost including heuristic
-                total_heur = total + util.manhattan_dist(nCoord, main.dest)
+                total_heur = total + util.manhattan_dist(nCoord, dest)
                 if nCoord not in visited:
                     # if node already exists in a path with
                     # less cost, skip to next iteration

@@ -216,7 +216,7 @@ def main():
                 # right arrow key: A*
                 elif event.key == K_RIGHT:
                     clear_path()
-                    squares = search.astar(grid[start[0]][start[1]])
+                    squares = search.astar(grid[start[0]][start[1]], dest)
                     display_path(squares)
             # window close button: EXIT
             elif event.type == QUIT:
