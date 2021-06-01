@@ -80,6 +80,7 @@ def setup_screen():
     pg.display.set_caption("Path Finding Algorithms")
     clock.tick(60)
 
+
 # setup grid of Square objects
 def setup_grid():
     for y in range(GRID_LENGTH):
@@ -181,12 +182,6 @@ def setup():
 
 
 def main():
-    #set_start(3, 5)
-    #set_dest(10, 29)
-    # global start
-    # start = (3, 5)
-    # global dest
-    # dest = (10, 29)
     setup()
     running = True
     drag = False
@@ -196,6 +191,8 @@ def main():
     # game loop
     while running:
         for event in pg.event.get():
+            global start
+            global dest
             if event.type == KEYDOWN:
                 # escape key: EXIT
                 if event.key == K_ESCAPE:
@@ -204,7 +201,7 @@ def main():
                 # up arrow key: BFS
                 elif event.key == K_UP:
                     clear_path()
-                    squares = search.bfs(grid[start[0]][start()[1]])
+                    squares = search.bfs(grid[start[0]][start[1]])
                     display_path(squares)
                 # down arrow key: DFS
                 elif event.key == K_DOWN:
@@ -262,11 +259,16 @@ def main():
                     grid[rect_y][rect_x].set_color(WHITE)
                     grid[y][x].set_color(rect_color)
                     if rect_color == GREEN:
+                        print("BEFORE:", start)
                         #global start
-                        set_start(y, x)
+                        start = (y, x)
+                        print("AFTER:", start)
                     elif rect_color == RED:
                         #global dest
-                        set_dest(y, x)
+                        print("BEFORE:", dest)
+                        #set_dest(y, x)
+                        dest = (y, x)
+                        print("AFTER:", dest)
                     rect_x = None
                     rect_y = None
                     rect_color = None
