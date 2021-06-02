@@ -38,7 +38,7 @@ clock = pg.time.Clock()
 grid = []
 rects = []
 start = (3, 5)
-dest = (10, 29)
+end = (10, 29)
 
 # a square on the grid
 class Square:
@@ -92,7 +92,7 @@ def setup_grid():
             color = WHITE
             # change start colors
             if y == start[0] and x == start[1] \
-                or y == dest[0] and x == dest[1]:
+                or y == end[0] and x == end[1]:
                 color = GREEN if x == start[1] and y == start[0] else RED
             grid[y][x].set_color(color)
             rect = pg.draw.rect(screen, color, \
@@ -161,17 +161,17 @@ def set_start(x, y):
     start = (x, y)
 
     
-def set_dest(x, y):
-    global dest
-    dest = (x, y)
+def set_end(x, y):
+    global end
+    end = (x, y)
 
 
 def get_start():
     return start
 
 
-def get_dest():
-    return dest
+def get_end():
+    return end
 
 
 # initialize/reset display grid
@@ -192,7 +192,7 @@ def main():
     while running:
         for event in pg.event.get():
             global start
-            global dest
+            global end
             if event.type == KEYDOWN:
                 # escape key: EXIT
                 if event.key == K_ESCAPE:
@@ -216,31 +216,36 @@ def main():
                 # right arrow key: A*
                 elif event.key == K_RIGHT:
                     clear_path()
-                    squares = search.astar(grid[start[0]][start[1]], dest)
+                    squares = search.astar(grid[start[0]][start[1]], end)
                     display_path(squares)
             # window close button: EXIT
             elif event.type == QUIT:
                 running = False
                 pg.quit()
-            elif event.type == pg.MOUSEBUTTONDOWN:
-                # left click
-                if event.button == 1:
-                    #while pg.mouse.get_pressed()[0]:
-                        #print ("being pressed and held")
-                    #    pass
+            # mouse moving
+            elif event.type == pg.MOUSEMOTION:
+                # left click held while moving
+                if pg.mouse.get_pressed()[0]:
                     pos = pg.mouse.get_pos()
                     # Change the x/y screen coordinates to grid coordinates
                     x = pos[0] // (SQ_WIDTH + MARGIN)
                     y = pos[1] // (SQ_WIDTH + MARGIN)
                     # Set that location to GREY
                     color = grid[y][x].get_color()
-                    # if not start or ending square, make wall
-                    if color != GREEN and color != RED:
-                        # TODO: click and drag for walls
+                    # if not start or ending square or being dragged, make wall
+                    if color != GREEN and color != RED and not drag:
                         make_wall(x, y)
+            elif event.type == pg.MOUSEBUTTONDOWN:
+                # left click
+                if event.button == 1:
+                    pos = pg.mouse.get_pos()
+                    # Change the x/y screen coordinates to grid coordinates
+                    x = pos[0] // (SQ_WIDTH + MARGIN)
+                    y = pos[1] // (SQ_WIDTH + MARGIN)
+                    # Set that location to GREY
+                    color = grid[y][x].get_color()
                     # click and drag start or ending square to move
-                    elif color == GREEN or color == RED:
-                        # TODO: click and drag for start and end point
+                    if color == GREEN or color == RED:
                         drag = True
                         rect_x = x
                         rect_y = y
@@ -249,26 +254,24 @@ def main():
                 elif event.button == 3:
                     setup()
             elif event.type == pg.MOUSEBUTTONUP:
+                pressed = False
+                # handle dragging start and end squares
                 if drag:
                     pos = pg.mouse.get_pos()
                     # Change the x/y screen coordinates to grid coordinates
                     x = pos[0] // (SQ_WIDTH + MARGIN)
                     y = pos[1] // (SQ_WIDTH + MARGIN)
+                    # update colors of dragged start and endpoint squares
                     draw_rect(WHITE, rect_x, rect_y)
                     draw_rect(rect_color, x, y)
                     grid[rect_y][rect_x].set_color(WHITE)
                     grid[y][x].set_color(rect_color)
+                    # set new start or end coords
                     if rect_color == GREEN:
-                        print("BEFORE:", start)
-                        #global start
                         start = (y, x)
-                        print("AFTER:", start)
                     elif rect_color == RED:
-                        #global dest
-                        print("BEFORE:", dest)
-                        #set_dest(y, x)
-                        dest = (y, x)
-                        print("AFTER:", dest)
+                        end = (y, x)
+                    # clear dragging information
                     rect_x = None
                     rect_y = None
                     rect_color = None
