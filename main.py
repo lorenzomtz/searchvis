@@ -1,6 +1,7 @@
 import pygame as pg
 import math
 import search
+from colour import Color
 
 # key constants from pygame
 from pygame.locals import (
@@ -32,6 +33,7 @@ WIDTH = 800
 MARGIN = 1
 SQ_WIDTH = 20
 GRID_LENGTH = 38
+SCALE = 255
 pg.init()  
 screen = pg.display.set_mode((WIDTH, WIDTH))
 clock = pg.time.Clock()
@@ -121,7 +123,7 @@ def populate_neighbors():
 def make_wall(x, y):
     color = GREY
     grid[y][x].set_color(color)
-    draw_rect(color, x, y)
+    draw_square(color, x, y)
 
 
 # use the list of squares returned from pathfinding to display the path found
@@ -133,7 +135,7 @@ def display_path(squares):
             y, x = sq.get_pos()
             color = BLACK
             grid[y][x].set_color(color)
-            draw_rect(color, x, y)
+            draw_square(color, x, y)
             pg.time.delay(5)
 
 
@@ -145,15 +147,35 @@ def clear_path():
             if color != GREEN and color != RED and color != GREY:
                 color = WHITE
                 grid[y][x].set_color(color)
-                draw_rect(color, x, y)
+                draw_square(color, x, y)
 
 
 # helper function for drawing on the screen
-def draw_rect(color, x, y):
+def draw_square(color, x, y):
     rect = pg.draw.rect(screen, color, \
                 [(MARGIN + SQ_WIDTH) * x + MARGIN, \
                     (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
     pg.display.update(rect)
+
+
+def draw_squares_at(visited):
+    total = len(visited)
+    green = Color("green")
+    red = Color("red")
+    colors = list(green.range_to(red, total))
+    count = 0
+    for y, x in visited:
+        square = grid[y][x]
+        sq_color = square.get_color()
+        if sq_color != RED and sq_color != GREEN:
+            rgb = list(colors[count].rgb)
+            count += 1
+            scaled_color = tuple([c * SCALE for c in rgb])
+            rect = pg.draw.rect(screen, scaled_color, \
+                [(MARGIN + SQ_WIDTH) * x + MARGIN, \
+                    (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
+            pg.display.update(rect)
+        pg.time.delay(5)
 
 
 def set_start(x, y):
@@ -216,8 +238,9 @@ def main():
                 # right arrow key: A*
                 elif event.key == K_RIGHT:
                     clear_path()
-                    squares = search.astar(grid[start[0]][start[1]], end)
-                    display_path(squares)
+                    path, squares = search.astar(grid[start[0]][start[1]], end)
+                    draw_squares_at(squares)
+                    display_path(path)
             # window close button: EXIT
             elif event.type == QUIT:
                 running = False
@@ -262,8 +285,8 @@ def main():
                     x = pos[0] // (SQ_WIDTH + MARGIN)
                     y = pos[1] // (SQ_WIDTH + MARGIN)
                     # update colors of dragged start and endpoint squares
-                    draw_rect(WHITE, rect_x, rect_y)
-                    draw_rect(rect_color, x, y)
+                    draw_square(WHITE, rect_x, rect_y)
+                    draw_square(rect_color, x, y)
                     grid[rect_y][rect_x].set_color(WHITE)
                     grid[y][x].set_color(rect_color)
                     # set new start or end coords
