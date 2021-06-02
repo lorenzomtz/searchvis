@@ -223,18 +223,21 @@ def main():
                 # up arrow key: BFS
                 elif event.key == K_UP:
                     clear_path()
-                    squares = search.bfs(grid[start[0]][start[1]])
-                    display_path(squares)
+                    path, squares = search.bfs(grid[start[0]][start[1]])
+                    draw_squares_at(squares)
+                    display_path(path)
                 # down arrow key: DFS
                 elif event.key == K_DOWN:
                     clear_path()
-                    squares = search.dfs(grid[start[0]][start[1]])
-                    display_path(squares)
+                    path, squares = search.dfs(grid[start[0]][start[1]])
+                    draw_squares_at(squares)
+                    display_path(path)
                 # left arrow key: UCS
                 elif event.key == K_LEFT:
                     clear_path()
-                    squares = search.ucs(grid[start[0]][start[1]])
-                    display_path(squares)
+                    path, squares = search.ucs(grid[start[0]][start[1]])
+                    draw_squares_at(squares)
+                    display_path(path)
                 # right arrow key: A*
                 elif event.key == K_RIGHT:
                     clear_path()
