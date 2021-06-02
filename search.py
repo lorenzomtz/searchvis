@@ -25,7 +25,7 @@ def dfs(square):
         return []
     visited.append(start)
     # find solution recursively
-    return dfs_recur(square, (start,'Undefined'), squares, visited, 255)
+    return dfs_recur(square, (start,'Undefined'), squares, visited, 255), []
     
 
 # recursive helper method for dfs
@@ -46,7 +46,6 @@ def dfs_recur(square, node, squares, visited, b):
                 continue
             squares.append(neighbor)
             # mark as visited on screen
-            #draw_square(neighbor)
             path = dfs_recur(neighbor, (nCoord), squares, visited, b)
             # if path with goal found, return it
             if len(path) > 0:
@@ -66,7 +65,7 @@ def bfs(square):
     q = Queue(maxsize = 1000)
     # trivial solution check
     if square.get_color() == RED:
-        return []
+        return [], []
     # set initial conditions
     q.put((square, start, squares))
     visited.append(start)
@@ -75,7 +74,7 @@ def bfs(square):
         sq, coord, squares = q.get()
         # check is current position is goal
         if sq.get_color() == RED:
-            return squares
+            return squares, visited
         # ignore if wall
         if sq.get_color() == GREY:
             continue
@@ -90,9 +89,8 @@ def bfs(square):
                     continue
                 nextSquares = squares + [neighbor]
                 q.put((neighbor, nCoord, nextSquares))
-                #draw_square(neighbor)
 
-    return []
+    return [], []
 
 
 # uniform-cost search
@@ -104,7 +102,7 @@ def ucs(square):
     pq = util.PriorityQueue()
     # trivial solution check
     if square.get_color() == RED:
-        return []
+        return [], []
     # set initial conditions
     pq.push((start, 0, squares, square), 0)
     costMap[start] = 0
@@ -112,7 +110,7 @@ def ucs(square):
         coord, cost, squares, sq = pq.pop()
         # check if current position is goal
         if sq.get_color() == RED:
-            return squares
+            return squares, visited
         if coord not in visited:
             visited.append(coord)
             # ignore if wall
@@ -135,9 +133,8 @@ def ucs(square):
                     costMap[nCoord] = total
                     nextSquares = squares + [neighbor]
                     pq.update((nCoord, total, nextSquares, neighbor), total)
-                    #draw_square(neighbor)
     
-    return []
+    return [], []
 
 
 # A* search
@@ -183,17 +180,5 @@ def astar(square, end):
                     costMap[nCoord] = total
                     nextSquares = squares + [neighbor]
                     pq.update((nCoord, total, nextSquares, neighbor), total_heur)
-                    #draw_square(neighbor)
     
     return [],[]
-
-# draw square on screen during pathfinding
-# def draw_square(square):
-#     nCoord = square.get_pos()
-#     if square.get_color() != RED:
-#         rect = pg.draw.rect(screen, BLUE, \
-#             [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
-#                 (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
-#         pg.display.update(rect)
-#     pg.time.delay(5)
-
