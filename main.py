@@ -150,7 +150,7 @@ def clear_path():
                 draw_square(color, x, y)
 
 
-# helper function for drawing on the screen
+# helper function for drawing a square on the screen
 def draw_square(color, x, y):
     rect = pg.draw.rect(screen, color, \
                 [(MARGIN + SQ_WIDTH) * x + MARGIN, \
@@ -158,23 +158,30 @@ def draw_square(color, x, y):
     pg.display.update(rect)
 
 
-def draw_squares_at(visited):
-    total = len(visited)
+# draws the squares at the coordinates given on the screen
+# with a color transition from beginning to end
+def draw_squares_at(coords):
+    total = len(coords)
     green = Color("green")
     red = Color("red")
+    # creates a range of colors to use for display
     colors = list(green.range_to(red, total))
     count = 0
-    for y, x in visited:
+    # loop through all of the coordinates given
+    for y, x in coords:
         square = grid[y][x]
         sq_color = square.get_color()
+        # avoid coloring over start and end nodes
         if sq_color != RED and sq_color != GREEN:
+            # get the rgb values for the current square
+            # and convert them to be in the 255 range
             rgb = list(colors[count].rgb)
-            count += 1
             scaled_color = tuple([c * SCALE for c in rgb])
             rect = pg.draw.rect(screen, scaled_color, \
                 [(MARGIN + SQ_WIDTH) * x + MARGIN, \
                     (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
             pg.display.update(rect)
+        count += 1
         pg.time.delay(5)
 
 
