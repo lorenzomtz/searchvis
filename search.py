@@ -3,7 +3,9 @@ from queue import PriorityQueue, Queue
 import main
 import pygame as pg
 import util
+from colour import Color
 
+green = Color("green")
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 GREY = (128, 128, 128)
@@ -11,6 +13,7 @@ screen = main.screen
 clock = main.clock
 MARGIN = main.MARGIN
 SQ_WIDTH = main.SQ_WIDTH
+SCALE = 255
 
 
 # depth-first search
@@ -44,7 +47,7 @@ def dfs_recur(square, node, squares, visited, b):
                 continue
             squares.append(neighbor)
             # mark as visited on screen
-            draw_square(neighbor)
+            draw_square(neighbor, 0, colors)
             path = dfs_recur(neighbor, (nCoord), squares, visited, b)
             # if path with goal found, return it
             if len(path) > 0:
@@ -58,6 +61,7 @@ def dfs_recur(square, node, squares, visited, b):
 
 # breadth-first search
 def bfs(square):
+    count = 0
     start = square.get_pos()
     visited = []
     squares = []
@@ -88,13 +92,15 @@ def bfs(square):
                     continue
                 nextSquares = squares + [neighbor]
                 q.put((neighbor, nCoord, nextSquares))
-                draw_square(neighbor)
+                draw_square(neighbor, count, colors)
+                count += 1
 
     return []
 
 
 # uniform-cost search
 def ucs(square):
+    count = 0
     start = square.get_pos()
     visited = []
     squares = []
@@ -133,13 +139,16 @@ def ucs(square):
                     costMap[nCoord] = total
                     nextSquares = squares + [neighbor]
                     pq.update((nCoord, total, nextSquares, neighbor), total)
-                    draw_square(neighbor)
+                    draw_square(neighbor, count, colors)
+                    count += 1
     
     return []
 
 
 # A* search
 def astar(square, end):
+    colors = list(green.range_to(Color("red"),440))
+    count = 0
     start = square.get_pos()
     visited = []
     squares = []
@@ -155,6 +164,7 @@ def astar(square, end):
         coord, cost, squares, sq = pq.pop()
         # check if current position is goal
         if sq.get_color() == RED:
+            print("COUNT:", count)
             return squares
         if coord not in visited:
             visited.append(coord)
@@ -181,15 +191,17 @@ def astar(square, end):
                     costMap[nCoord] = total
                     nextSquares = squares + [neighbor]
                     pq.update((nCoord, total, nextSquares, neighbor), total_heur)
-                    draw_square(neighbor)
+                    draw_square(neighbor, count, colors)
+                    count += 1
     
     return []
 
 # draw square on screen during pathfinding
-def draw_square(square):
+def draw_square(square, count, colors):
     nCoord = square.get_pos()
     if square.get_color() != RED:
-        rect = pg.draw.rect(screen, (180, 180, 255), \
+        color = colors[count].rgb
+        rect = pg.draw.rect(screen, (color[0]*SCALE, color[1]*SCALE, color[2]*SCALE), \
             [(MARGIN + SQ_WIDTH) * nCoord[1] + MARGIN, \
                 (MARGIN + SQ_WIDTH) * nCoord[0] + MARGIN, SQ_WIDTH, SQ_WIDTH])
         pg.display.update(rect)
