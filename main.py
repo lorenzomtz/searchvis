@@ -172,7 +172,7 @@ def draw_squares_at(coords):
         square = grid[y][x]
         sq_color = square.get_color()
         # avoid coloring over start and end nodes
-        if sq_color != RED and sq_color != GREEN:
+        if sq_color != RED and sq_color != GREEN and sq_color != GREY:
             # get the rgb values for the current square
             # and convert them to be in the 255 range
             rgb = list(colors[count].rgb)
