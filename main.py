@@ -14,6 +14,8 @@ from pygame.locals import (
     QUIT,
 )
 
+legal_actions = [K_UP, K_DOWN, K_LEFT, K_RIGHT]
+
 # color constants
 # TODO: find prettier colors
 RED = (255, 0, 0)
@@ -185,22 +187,29 @@ def draw_squares_at(coords):
         pg.time.delay(5)
 
 
-def set_start(x, y):
-    global start
-    start = (x, y)
+# helper function to perform the specified type
+# of search dependent on keyboard input
+def search_handler(type):
+    # clear any path on grid if existing
+    clear_path()
+    y = start[0]
+    x = start[1]
+    # up arrow key: BFS
+    if type == pg.K_UP:
+        path, squares = search.bfs(grid[y][x])
+    # down arrow key: DFS
+    elif type == pg.K_DOWN:
+        path, squares = search.dfs(grid[y][x])
+    # left arrow key: UCS
+    elif type == pg.K_LEFT:
+        path, squares = search.ucs(grid[y][x])
+    # right arrow key: A*
+    elif type == pg.K_RIGHT:
+        path, squares = search.astar(grid[y][x], end)
 
-    
-def set_end(x, y):
-    global end
-    end = (x, y)
-
-
-def get_start():
-    return start
-
-
-def get_end():
-    return end
+    # display pathfinding process and resulting path found
+    draw_squares_at(squares)
+    display_path(path)
 
 
 # initialize/reset display grid
@@ -227,30 +236,9 @@ def main():
                 if event.key == K_ESCAPE:
                     running = False
                     pg.quit()
-                # up arrow key: BFS
-                elif event.key == K_UP:
-                    clear_path()
-                    path, squares = search.bfs(grid[start[0]][start[1]])
-                    draw_squares_at(squares)
-                    display_path(path)
-                # down arrow key: DFS
-                elif event.key == K_DOWN:
-                    clear_path()
-                    path, squares = search.dfs(grid[start[0]][start[1]])
-                    draw_squares_at(squares)
-                    display_path(path)
-                # left arrow key: UCS
-                elif event.key == K_LEFT:
-                    clear_path()
-                    path, squares = search.ucs(grid[start[0]][start[1]])
-                    draw_squares_at(squares)
-                    display_path(path)
-                # right arrow key: A*
-                elif event.key == K_RIGHT:
-                    clear_path()
-                    path, squares = search.astar(grid[start[0]][start[1]], end)
-                    draw_squares_at(squares)
-                    display_path(path)
+                # arrow keys: SEARCH
+                elif event.key in legal_actions:
+                    search_handler(event.key)
             # window close button: EXIT
             elif event.type == QUIT:
                 running = False
