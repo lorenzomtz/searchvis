@@ -25,12 +25,11 @@ def dfs(square):
         return []
     visited.append(start)
     # find solution recursively
-    return dfs_recur(square, (start,'Undefined'), squares, visited, 255), []
+    return dfs_recur(square, start, squares, visited), visited
     
 
 # recursive helper method for dfs
-def dfs_recur(square, node, squares, visited, b):
-    coord, direc = node
+def dfs_recur(square, coord, squares, visited):
     visited.append(coord)
     # check if current position is goal
     if square.get_color() == RED:
@@ -46,7 +45,7 @@ def dfs_recur(square, node, squares, visited, b):
                 continue
             squares.append(neighbor)
             # mark as visited on screen
-            path = dfs_recur(neighbor, (nCoord), squares, visited, b)
+            path = dfs_recur(neighbor, (nCoord), squares, visited)
             # if path with goal found, return it
             if len(path) > 0:
                 return path
