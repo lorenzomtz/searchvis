@@ -2,32 +2,35 @@ import heapq
 import math
 
 class PriorityQueue:
-    """
-      Implements a priority queue data structure. Each inserted item
-      has a priority associated with it and the client is usually interested
-      in quick retrieval of the lowest-priority item in the queue. This
-      data structure allows O(1) access to the lowest-priority item.
-    """
+
+    # initialize a priority queue
     def  __init__(self):
         self.heap = []
         self.count = 0
 
+
+    # push onto the queue
     def push(self, item, priority):
         entry = (priority, self.count, item)
         heapq.heappush(self.heap, entry)
         self.count += 1
 
+
+    # pop off of the queue
     def pop(self):
         (_, _, item) = heapq.heappop(self.heap)
         return item
 
+
+    # empty queue check
     def isEmpty(self):
         return len(self.heap) == 0
 
+
+    # If item already in priority queue with higher priority, update its priority and rebuild the heap.
+    # If item already in priority queue with equal or lower priority, do nothing.
+    # If item not in priority queue, do the same thing as self.push.
     def update(self, item, priority):
-        # If item already in priority queue with higher priority, update its priority and rebuild the heap.
-        # If item already in priority queue with equal or lower priority, do nothing.
-        # If item not in priority queue, do the same thing as self.push.
         for index, (p, c, i) in enumerate(self.heap):
             if i == item:
                 if p <= priority:
