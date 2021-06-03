@@ -1,6 +1,7 @@
 import pygame as pg
 import search
 from colour import Color
+import sys
 
 
 # key constants from pygame
@@ -17,12 +18,12 @@ search_actions = [K_UP, K_DOWN, K_LEFT, K_RIGHT]
 
 
 # color constants
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-YELLOW = (255, 255, 0)
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-GREY = (128, 128, 128)
+RED = (193, 98, 102)
+GREEN = (144, 176, 97)
+WHITE = (251, 250, 245)
+YELLOW = (253, 253, 150)
+BLACK = (41, 45, 52)
+GREY = (41, 45, 52)
 SCALE = 255
 
 
@@ -39,7 +40,8 @@ screen = pg.display.set_mode((WIDTH, WIDTH))
 clock = pg.time.Clock()
 grid = []
 start = (3, 5)
-end = (10, 29)
+end = (29, 29)
+sys.setrecursionlimit(10 ** 6)
 
 
 # a square on the grid
@@ -144,14 +146,14 @@ def make_wall(x, y):
 
 
 # use the list of squares returned from pathfinding to display the path found
-# path marked as BLACK on the grid
+# path marked as YELLOW on the grid
 def display_path(squares):
     for sq in squares:
         color = sq.get_color()
         # recolor squares chosen as path squares
         if color != GREEN and color != RED and color != GREY:
             y, x = sq.get_pos()
-            color = BLACK
+            color = YELLOW
             grid[y][x].set_color(color)
             draw_square(color, x, y)
             pg.time.delay(5)
@@ -182,8 +184,10 @@ def draw_square(color, x, y):
 def draw_squares_at(coords):
     # length of coordinate list for display purposes
     total = len(coords)
-    green = Color("green")
-    red = Color("red")
+    g = (GREEN[0] / SCALE, GREEN[1] / SCALE, GREEN[2] / SCALE)
+    green = Color(rgb = g)
+    r = (RED[0] / SCALE, RED[1] / SCALE, RED[2] / SCALE)
+    red = Color(rgb = r)
 
     # creates a range of colors to use for display
     colors = list(green.range_to(red, total))
