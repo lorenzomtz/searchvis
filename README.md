@@ -1,8 +1,10 @@
 # Searchvis 
 Searchvis is a visualization application for various pathfinding algorithms.
 Squares have colors that represent different features in the application.
-The main features include a start(GREEN) and goal(RED) square that are able to be moved to any location on the grid.
-The user is also able to create barriers(GREY) for the search to maneuver around as well as the choice between 4 different algorithms.
+The main features include a start and end square that are able to be relocated to any location on the grid by click-and-drag.
+The user is also able to create barriers for the search to maneuver around by either clicking at a singular location, or clicking and dragging the cursor around to make multiple barriers. The user has the choice between 4 different search algorithms.
+Different keybinds are available for various functions to be initiated.
+
 
 ## Square Colors
 1. GREEN = start
@@ -17,3 +19,15 @@ The user is also able to create barriers(GREY) for the search to maneuver around
 3. Uniform Cost Search
 4. A* Search
 
+## Keybinds
+1. ###### ARROW KEYS: search
+    - UP ARROW = BFS
+    - DOWN ARROW = DFS
+    - LEFT ARROW = UCS
+    - RIGHT ARROW = A*
+2. ###### ESCAPE KEY: exit application
+3. ###### MOUSE CLICK: screen manipulation
+    - LEFT CLICK: barrier forming
+        - able to click once, or click and drag
+    - RIGHT CLICK: clear grid
+        - only keeps start and end squares
