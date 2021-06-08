@@ -1,4 +1,5 @@
 import pygame as pg
+import pygame_widgets as pw
 import search
 from colour import Color
 import sys
@@ -36,7 +37,7 @@ GRID_LENGTH = 38
 
 # set up square screen/grid
 pg.init()
-screen = pg.display.set_mode((WIDTH, WIDTH))
+screen = pg.display.set_mode((WIDTH + 200, WIDTH))
 clock = pg.time.Clock()
 grid = []
 start = (3, 5)
@@ -118,6 +119,14 @@ def setup_grid():
             rect = pg.draw.rect(screen, color, \
                 [(MARGIN + SQ_WIDTH) * x + MARGIN, \
                     (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
+
+    button = pw.Button(
+        screen, 100, 100, 300, 150, text='Hello',
+        fontSize=50, margin=20,
+        inactiveColour=(255, 0, 0),
+        pressedColour=(0, 255, 0), radius=20,
+        onClick=lambda: print('Click')
+     )
 
     pg.display.flip()
 
@@ -222,6 +231,10 @@ def get_coords():
     x = pos[0] // (SQ_WIDTH + MARGIN)
     y = pos[1] // (SQ_WIDTH + MARGIN)
 
+    # bounds check
+    if x not in range(GRID_LENGTH) or y not in range(GRID_LENGTH):
+        x = -1
+
     return x, y
 
 
@@ -294,7 +307,11 @@ def main():
                 if pg.mouse.get_pressed()[0]:
                     # translate mouse coordinates to grid coordinates
                     x, y = get_coords()
-                    
+
+                    # bounds check
+                    if x == -1:
+                        continue
+
                     # Set that location to GREY
                     color = grid[y][x].get_color()
                     
@@ -308,12 +325,15 @@ def main():
                 if event.button == 1:
                     # translate mouse coordinates to grid coordinates
                     x, y = get_coords()
+
+                    # bounds check
+                    if x == -1:
+                        continue
                     
-                    # Set that location to GREY
+                    # set that location to GREY
                     color = grid[y][x].get_color()
                     
-                    # click and drag start or ending squa
-                    # re to move
+                    # click and drag start or ending square to move
                     if color == GREEN or color == RED:
                         drag = True
                         rect_x = x
@@ -336,7 +356,11 @@ def main():
                 if drag:
                     # translate mouse coordinates to grid coordinates
                     x, y = get_coords()
-                    
+
+                    # bounds check
+                    if x == -1:
+                        continue
+
                     # update colors of dragged start and endpoint squares
                     draw_square(WHITE, rect_x, rect_y)
                     draw_square(rect_color, x, y)
