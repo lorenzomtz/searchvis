@@ -38,6 +38,16 @@ GRID_LENGTH = 38
 # set up square screen/grid
 pg.init()
 screen = pg.display.set_mode((WIDTH + 200, WIDTH))
+button_arr = pw.ButtonArray(screen, 850, 50, 500, 500, (2, 2),
+                          border=100, texts=('1', '2', '3', '4'),
+                         colour=YELLOW)
+button = pw.Button(
+        screen, 850, 300, 80, 80, text='Hello',
+        fontSize=20, margin=20,
+        inactiveColour=RED,
+        pressedColour=BLACK, radius=20,
+        onClick=lambda: print('Click')
+     )
 clock = pg.time.Clock()
 grid = []
 start = (3, 5)
@@ -119,14 +129,6 @@ def setup_grid():
             rect = pg.draw.rect(screen, color, \
                 [(MARGIN + SQ_WIDTH) * x + MARGIN, \
                     (MARGIN + SQ_WIDTH) * y + MARGIN, SQ_WIDTH, SQ_WIDTH])
-
-    button = pw.Button(
-        screen, 100, 100, 300, 150, text='Hello',
-        fontSize=50, margin=20,
-        inactiveColour=(255, 0, 0),
-        pressedColour=(0, 255, 0), radius=20,
-        onClick=lambda: print('Click')
-     )
 
     pg.display.flip()
 
@@ -281,8 +283,9 @@ def main():
     
     # game loop
     while running:
+        events = pg.event.get()
         # loop through event queue
-        for event in pg.event.get():
+        for event in events:
             global start
             global end
             
@@ -329,7 +332,7 @@ def main():
                     # bounds check
                     if x == -1:
                         continue
-                    
+
                     # set that location to GREY
                     color = grid[y][x].get_color()
                     
@@ -378,6 +381,10 @@ def main():
                     rect_y = None
                     rect_color = None
                     drag = False
+
+        button.listen(events)
+        button.draw()
+        pg.display.update()
 
 
 if __name__ == "__main__":
