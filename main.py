@@ -38,16 +38,45 @@ GRID_LENGTH = 38
 # set up square screen/grid
 pg.init()
 screen = pg.display.set_mode((WIDTH + 200, WIDTH))
-button_arr = pw.ButtonArray(screen, 850, 50, 500, 500, (2, 2),
-                          border=100, texts=('1', '2', '3', '4'),
-                         colour=YELLOW)
-button = pw.Button(
-        screen, 850, 300, 80, 80, text='Hello',
-        fontSize=20, margin=20,
+# button_arr = pw.ButtonArray(screen, 850, 300, 50, 50, (2, 2),
+#                           border=100, texts=('1', '2', '3', '4'),
+#                          colour=YELLOW)
+clear_button = pw.Button(
+        screen, 850, 300, 100, 30, text='Clear Grid',
+        margin=20, font = pg.font.SysFont("consolas", 15),
         inactiveColour=RED,
-        pressedColour=BLACK, radius=20,
+        pressedColour=WHITE, radius=5,
         onClick=lambda: print('Click')
      )
+dfs_button = pw.Button(
+        screen, 850, 200, 100, 30, text='Depth-First',
+        margin=20, font = pg.font.SysFont("consolas", 15),
+        inactiveColour=RED,
+        pressedColour=WHITE, radius=5,
+        onClick=lambda: print('Click')
+     )
+bfs_button = pw.Button(
+        screen, 850, 300, 100, 30, text='Breadth-First',
+        margin=20, font = pg.font.SysFont("consolas", 15),
+        inactiveColour=RED,
+        pressedColour=WHITE, radius=5,
+        onClick=lambda: print('Click')
+     )
+ucs_button = pw.Button(
+        screen, 850, 400, 100, 30, text='Uniform-Cost',
+        margin=20, font = pg.font.SysFont("consolas", 15),
+        inactiveColour=RED,
+        pressedColour=WHITE, radius=5,
+        onClick=lambda: print('Click')
+     )
+astar_button = pw.Button(
+        screen, 850, 500, 100, 30, text='A*',
+        margin=20, font = pg.font.SysFont("consolas", 15),
+        inactiveColour=RED,
+        pressedColour=WHITE, radius=5,
+        onClick=lambda: print('Click')
+     )
+buttons = [clear_button, dfs_button, bfs_button, ucs_button, astar_button]
 clock = pg.time.Clock()
 grid = []
 start = (3, 5)
@@ -385,8 +414,9 @@ def main():
 
         # button handler
         if running:
-            button.listen(events)
-            button.draw()
+            for button in buttons:
+                button.listen(events)
+                button.draw()
             pg.display.update()
 
 
