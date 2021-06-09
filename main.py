@@ -295,6 +295,7 @@ def main():
                 if event.key == K_ESCAPE:
                     running = False
                     pg.quit()
+
                 # arrow keys: SEARCH
                 elif event.key in search_actions:
                     search_handler(event.key)
@@ -303,7 +304,7 @@ def main():
             elif event.type == QUIT:
                 running = False
                 pg.quit()
-            
+
             # mouse moving
             elif event.type == pg.MOUSEMOTION:
                 # left click held while moving
@@ -382,9 +383,11 @@ def main():
                     rect_color = None
                     drag = False
 
-        button.listen(events)
-        button.draw()
-        pg.display.update()
+        # button handler
+        if running:
+            button.listen(events)
+            button.draw()
+            pg.display.update()
 
 
 if __name__ == "__main__":
