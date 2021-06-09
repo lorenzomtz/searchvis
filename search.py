@@ -1,6 +1,10 @@
-from main import RED, GREY
 from queue import Queue
 import util
+
+
+# color constants
+RED = (193, 98, 102)
+GREY = (41, 45, 52)
 
 
 # depth-first search
@@ -202,7 +206,7 @@ def astar(square, end):
                 if nCoord not in visited:
                     # total path cost with and without heuristic
                     total = cost + nCost
-                    total_heur = total + util.manhattan_dist(nCoord, end)
+                    total_heur = total + util.euclid_dist(nCoord, end)
                     
                     # if node already exists in a path with
                     # less cost, skip to next iteration
