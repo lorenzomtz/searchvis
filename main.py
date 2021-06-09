@@ -1,6 +1,6 @@
 import pygame as pg
 import pygame_widgets as pw
-import search
+from search import dfs, bfs, ucs, astar
 from colour import Color
 import sys
 
@@ -302,16 +302,16 @@ def search_handler(type):
     
     # BFS
     if type == BFS:
-        path, squares = search.bfs(grid[y][x])
+        path, squares = bfs(grid[y][x])
     # DFS
     elif type == DFS:
-        path, squares = search.dfs(grid[y][x])
+        path, squares = dfs(grid[y][x])
     # UCS
     elif type == UCS:
-        path, squares = search.ucs(grid[y][x])
+        path, squares = ucs(grid[y][x])
     # A*
     elif type == ASTAR:
-        path, squares = search.astar(grid[y][x], end)
+        path, squares = astar(grid[y][x], end)
     
     # no path found
     if len(path) == 0 or len(squares) == 0:
