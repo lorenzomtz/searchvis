@@ -35,53 +35,60 @@ SQ_WIDTH = 20
 GRID_LENGTH = 38
 
 
+# search constants
+DFS = 0
+BFS = 1
+UCS = 2
+ASTAR = 3
+
+
 # set up square screen/grid
 pg.init()
 screen = pg.display.set_mode((WIDTH + 200, WIDTH))
-# button_arr = pw.ButtonArray(screen, 850, 300, 50, 50, (2, 2),
-#                           border=100, texts=('1', '2', '3', '4'),
-#                          colour=YELLOW)
-clear_button = pw.Button(
-        screen, 850, 300, 100, 30, text='Clear Grid',
-        margin=20, font = pg.font.SysFont("consolas", 15),
-        inactiveColour=RED,
-        pressedColour=WHITE, radius=5,
-        onClick=lambda: print('Click')
-     )
-dfs_button = pw.Button(
-        screen, 850, 200, 100, 30, text='Depth-First',
-        margin=20, font = pg.font.SysFont("consolas", 15),
-        inactiveColour=RED,
-        pressedColour=WHITE, radius=5,
-        onClick=lambda: print('Click')
-     )
-bfs_button = pw.Button(
-        screen, 850, 300, 100, 30, text='Breadth-First',
-        margin=20, font = pg.font.SysFont("consolas", 15),
-        inactiveColour=RED,
-        pressedColour=WHITE, radius=5,
-        onClick=lambda: print('Click')
-     )
-ucs_button = pw.Button(
-        screen, 850, 400, 100, 30, text='Uniform-Cost',
-        margin=20, font = pg.font.SysFont("consolas", 15),
-        inactiveColour=RED,
-        pressedColour=WHITE, radius=5,
-        onClick=lambda: print('Click')
-     )
-astar_button = pw.Button(
-        screen, 850, 500, 100, 30, text='A*',
-        margin=20, font = pg.font.SysFont("consolas", 15),
-        inactiveColour=RED,
-        pressedColour=WHITE, radius=5,
-        onClick=lambda: print('Click')
-     )
-buttons = [clear_button, dfs_button, bfs_button, ucs_button, astar_button]
 clock = pg.time.Clock()
 grid = []
 start = (3, 5)
 end = (29, 29)
 sys.setrecursionlimit(10 ** 6)
+
+
+# button initialization
+clear_button = pw.Button(
+        screen, 850, 100, 100, 30, text='Clear Grid',
+        margin=20, font = pg.font.SysFont("consolas", 15),
+        inactiveColour=RED,
+        pressedColour=WHITE, radius=5,
+        onClick=lambda: setup()
+     )
+dfs_button = pw.Button(
+        screen, 850, 200, 100, 30, text='DFS',
+        margin=20, font = pg.font.SysFont("consolas", 15),
+        inactiveColour=RED,
+        pressedColour=WHITE, radius=5,
+        onClick=lambda: search_handler(DFS)
+     )
+bfs_button = pw.Button(
+        screen, 850, 300, 100, 30, text='BFS',
+        margin=20, font = pg.font.SysFont("consolas", 15),
+        inactiveColour=RED,
+        pressedColour=WHITE, radius=5,
+        onClick=lambda: search_handler(BFS)
+     )
+ucs_button = pw.Button(
+        screen, 850, 400, 100, 30, text='UCS',
+        margin=30, font = pg.font.SysFont("consolas", 15),
+        inactiveColour=RED,
+        pressedColour=WHITE, radius=5,
+        onClick=lambda: search_handler(UCS)
+     )
+astar_button = pw.Button(
+        screen, 850, 500, 100, 30, text='A*',
+        margin=10, font = pg.font.SysFont("consolas", 15),
+        inactiveColour=RED,
+        pressedColour=WHITE, radius=5,
+        onClick=lambda: search_handler(ASTAR)
+     )
+buttons = [clear_button, dfs_button, bfs_button, ucs_button, astar_button]
 
 
 # a square on the grid
@@ -270,24 +277,24 @@ def get_coords():
 
 
 # helper function to perform the specified type
-# of search dependent on keyboard input
+# of search dependent on button input
 def search_handler(type):
     # clear any path on grid if existing
     clear_path()
     y = start[0]
     x = start[1]
     
-    # up arrow key: BFS
-    if type == pg.K_UP:
+    # BFS
+    if type == BFS:
         path, squares = search.bfs(grid[y][x])
-    # down arrow key: DFS
-    elif type == pg.K_DOWN:
+    # DFS
+    elif type == DFS:
         path, squares = search.dfs(grid[y][x])
-    # left arrow key: UCS
-    elif type == pg.K_LEFT:
+    # UCS
+    elif type == UCS:
         path, squares = search.ucs(grid[y][x])
-    # right arrow key: A*
-    elif type == pg.K_RIGHT:
+    # A*
+    elif type == ASTAR:
         path, squares = search.astar(grid[y][x], end)
     
     # display pathfinding process and resulting path found
@@ -325,10 +332,6 @@ def main():
                     running = False
                     pg.quit()
 
-                # arrow keys: SEARCH
-                elif event.key in search_actions:
-                    search_handler(event.key)
-            
             # window close button: EXIT
             elif event.type == QUIT:
                 running = False
