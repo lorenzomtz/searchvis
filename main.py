@@ -297,9 +297,13 @@ def search_handler(type):
     elif type == ASTAR:
         path, squares = search.astar(grid[y][x], end)
     
+    # no path found
+    if len(path) == 0 or len(squares) == 0:
+        print("NO PATH FOUND SOWWY :(")
     # display pathfinding process and resulting path found
-    draw_squares_at(squares)
-    display_path(path)
+    else:
+        draw_squares_at(squares)
+        display_path(path)
 
 
 # initialize/reset display grid
