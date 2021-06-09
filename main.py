@@ -52,39 +52,55 @@ end = (29, 29)
 sys.setrecursionlimit(10 ** 6)
 
 
+# creates a range of colors to use for display
+b_g = (GREEN[0] / SCALE, GREEN[1] / SCALE, GREEN[2] / SCALE)
+b_green = Color(rgb = b_g)
+b_r = (RED[0] / SCALE, RED[1] / SCALE, RED[2] / SCALE)
+b_red = Color(rgb = b_r)
+count = 0
+raw_gradient = list(b_green.range_to(b_red, 5))
+adjusted_gradient = []
+for c in raw_gradient:
+    raw_rgb = list(raw_gradient[count].rgb)
+    adjusted_rgb = tuple([c_val * SCALE for c_val in raw_rgb])
+    adjusted_gradient.append(adjusted_rgb)
+    count += 1
+
+
 # button initialization
+consolas = pg.font.SysFont("consolas", 15)
 clear_button = pw.Button(
         screen, 850, 100, 100, 30, text='Clear Grid',
-        margin=20, font = pg.font.SysFont("consolas", 15),
-        inactiveColour=RED,
+        margin=20, font=consolas,
+        inactiveColour=adjusted_gradient[0],
         pressedColour=WHITE, radius=5,
         onClick=lambda: setup()
      )
 dfs_button = pw.Button(
         screen, 850, 200, 100, 30, text='DFS',
-        margin=20, font = pg.font.SysFont("consolas", 15),
-        inactiveColour=RED,
+        margin=20, font=consolas,
+        inactiveColour=adjusted_gradient[1],
         pressedColour=WHITE, radius=5,
         onClick=lambda: search_handler(DFS)
      )
 bfs_button = pw.Button(
         screen, 850, 300, 100, 30, text='BFS',
-        margin=20, font = pg.font.SysFont("consolas", 15),
-        inactiveColour=RED,
+        margin=20, font=consolas,
+        inactiveColour=adjusted_gradient[2],
         pressedColour=WHITE, radius=5,
         onClick=lambda: search_handler(BFS)
      )
 ucs_button = pw.Button(
         screen, 850, 400, 100, 30, text='UCS',
-        margin=30, font = pg.font.SysFont("consolas", 15),
-        inactiveColour=RED,
+        margin=30, font=consolas,
+        inactiveColour=adjusted_gradient[3],
         pressedColour=WHITE, radius=5,
         onClick=lambda: search_handler(UCS)
      )
 astar_button = pw.Button(
         screen, 850, 500, 100, 30, text='A*',
-        margin=10, font = pg.font.SysFont("consolas", 15),
-        inactiveColour=RED,
+        margin=10, font=consolas,
+        inactiveColour=adjusted_gradient[4],
         pressedColour=WHITE, radius=5,
         onClick=lambda: search_handler(ASTAR)
      )
