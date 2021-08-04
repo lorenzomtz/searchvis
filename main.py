@@ -68,7 +68,7 @@ for c in raw_gradient:
 
 
 # button initialization
-consolas = pg.font.SysFont("consolas", 15)
+consolas = pg.font.SysFont('consolas', 15)
 clear_button = pw.Button(
         screen, 850, 100, 100, 30, text='Clear Grid',
         margin=20, font=consolas,
